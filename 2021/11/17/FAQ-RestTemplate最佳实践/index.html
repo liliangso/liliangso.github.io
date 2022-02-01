@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>RestTemplate最佳实践 | liliang的个人博客</title>
+  <meta name="description" content="一 介绍RestTemplate 是Spring提供的一个用于http访问的工具模板 二 依赖使用restTemplate需要导入如下pom依赖 1234567891011&lt;!--restTemplate启动器--&gt;&lt;dependency&gt;  &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;  &lt;artif">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RestTemplate最佳实践">
+<meta property="og:url" content="http://example.com/2021/11/17/FAQ-RestTemplate%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一 介绍RestTemplate 是Spring提供的一个用于http访问的工具模板 二 依赖使用restTemplate需要导入如下pom依赖 1234567891011&lt;!--restTemplate启动器--&gt;&lt;dependency&gt;  &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;  &lt;artif">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-17T13:41:35.214Z">
+<meta property="article:modified_time" content="2022-02-01T12:38:15.190Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FAQ">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2021/11/17/FAQ-RestTemplate%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-UML/" class="title">UML</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-31T08:19:09.025Z" itemprop="datePublished">2022-01-31</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" class="title">代理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-26T14:49:18.927Z" itemprop="datePublished">2022-01-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">建造者</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-25T15:44:06.884Z" itemprop="datePublished">2022-01-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82/" class="title">抽象工厂</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-23T15:17:16.828Z" itemprop="datePublished">2022-01-23</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/" class="title">工厂方法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-23T09:43:37.149Z" itemprop="datePublished">2022-01-23</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">一 介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-%E4%BE%9D%E8%B5%96"><span class="toc-number">2.</span> <span class="toc-text">二 依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89-restTemplate%E9%85%8D%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">三 restTemplate配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B-%E4%BD%BF%E7%94%A8restTemplate"><span class="toc-number">4.</span> <span class="toc-text">四 使用restTemplate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94-%E5%8F%91%E9%80%81POST%E8%AF%B7%E6%B1%82"><span class="toc-number">5.</span> <span class="toc-text">五 发送POST请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD-%E5%8F%91%E9%80%81GET%E8%AF%B7%E6%B1%82"><span class="toc-number">6.</span> <span class="toc-text">六 发送GET请求</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-FAQ-RestTemplate最佳实践" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      RestTemplate最佳实践
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/11/17/FAQ-RestTemplate%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="article-date">
+	  <time datetime="2021-11-17T13:41:35.214Z" itemprop="datePublished">2021-11-17</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/11/17/FAQ-RestTemplate%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.1k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 5(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="一-介绍"><a href="#一-介绍" class="headerlink" title="一 介绍"></a>一 介绍</h3><p>RestTemplate 是Spring提供的一个用于http访问的工具模板</p>
+<h3 id="二-依赖"><a href="#二-依赖" class="headerlink" title="二 依赖"></a>二 依赖</h3><p>使用restTemplate需要导入如下pom依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--restTemplate启动器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-rest<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--根据需要导入httpcomponents--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.httpcomponents<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>httpclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.5.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="三-restTemplate配置"><a href="#三-restTemplate配置" class="headerlink" title="三 restTemplate配置"></a>三 restTemplate配置</h3><p>在使用restTemplate之前 还需要简单的对restTemplate进行配置 配置类如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;xx.xx.xx&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RestTemplateConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Long connectionTimeout = <span class="number">1000L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Long readTimeout = <span class="number">1000L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span> <span class="comment">//将RestTemplate装配为bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RestTemplate <span class="title">restTemplate</span><span class="params">(RestTemplateBuilder builder)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> builder</span><br><span class="line">                .requestFactory(HttpComponentsClientHttpRequestFactory.class)</span><br><span class="line">                .setConnectTimeout(Duration.ofMillis(connectionTimeout))  <span class="comment">//设置http的链接超时时间</span></span><br><span class="line">                .setReadTimeout(Duration.ofMillis(readTimeout)) <span class="comment">//设置http的响应超时时间</span></span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="四-使用restTemplate"><a href="#四-使用restTemplate" class="headerlink" title="四 使用restTemplate"></a>四 使用restTemplate</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 获取nacos中指定dataId的配置信息</span></span><br><span class="line"><span class="comment">    **/</span></span><br><span class="line">    <span class="meta">@RequestMapping(path = &quot;/getConfig&quot;, method = RequestMethod.GET)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getConfig</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取nacos的accessToken</span></span><br><span class="line">        String accessToken = getAccessToken();</span><br><span class="line">        accessToken = String.valueOf(JSON.parseObject(accessToken, Map.class).get(<span class="string">&quot;accessToken&quot;</span>));</span><br><span class="line"></span><br><span class="line">        String url = <span class="string">&quot;http://xxxx/nacos/v1/cs/configs?dataId=&#123;dataId&#125;&amp;group=&#123;group&#125;&amp;tenant=&#123;tenant&#125;&amp;accessToken=&#123;accessToken&#125;&amp;namespaceId=&#123;namespaceId&#125;&quot;</span>;</span><br><span class="line">        Map&lt;String, Object&gt; paramMap = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">        paramMap.put(<span class="string">&quot;dataId&quot;</span>,<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line">        paramMap.put(<span class="string">&quot;group&quot;</span>,<span class="string">&quot;DEFAULT_GROUP&quot;</span>);</span><br><span class="line">        paramMap.put(<span class="string">&quot;tenant&quot;</span>,<span class="string">&quot;xx&quot;</span>);</span><br><span class="line">        paramMap.put(<span class="string">&quot;accessToken&quot;</span>, accessToken);</span><br><span class="line">        paramMap.put(<span class="string">&quot;namespaceId&quot;</span>,<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line"></span><br><span class="line">				<span class="comment">//设置请求头</span></span><br><span class="line">        HttpHeaders headers = <span class="keyword">new</span> HttpHeaders();</span><br><span class="line">        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);</span><br><span class="line"></span><br><span class="line">        HttpEntity&lt;MultiValueMap&lt;String, Object&gt;&gt; entity = <span class="keyword">new</span> HttpEntity&lt;&gt;(<span class="keyword">null</span>, headers);</span><br><span class="line">        ResponseEntity&lt;String&gt; response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, paramMap);</span><br><span class="line">        <span class="keyword">return</span> response.getBody();</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 获取nacos的accessToken</span></span><br><span class="line"><span class="comment">    **/</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> String <span class="title">getAccessToken</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String url = <span class="string">&quot;http://xxx/nacos/v1/auth/login&quot;</span>;</span><br><span class="line">        MultiValueMap&lt;String, Object&gt; paramMap = <span class="keyword">new</span> LinkedMultiValueMap&lt;String, Object&gt;();</span><br><span class="line">        paramMap.add(<span class="string">&quot;username&quot;</span>,<span class="string">&quot;nacos&quot;</span>);</span><br><span class="line">        paramMap.add(<span class="string">&quot;password&quot;</span>,<span class="string">&quot;nacos&quot;</span>);</span><br><span class="line"></span><br><span class="line">        HttpHeaders headers = <span class="keyword">new</span> HttpHeaders();</span><br><span class="line">        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); <span class="comment">//请求类型为表单</span></span><br><span class="line"></span><br><span class="line">        HttpEntity&lt;MultiValueMap&lt;String, Object&gt;&gt; entity = <span class="keyword">new</span> HttpEntity&lt;&gt;(paramMap, headers);</span><br><span class="line">        ResponseEntity&lt;String&gt; response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);</span><br><span class="line">        <span class="keyword">return</span> response.getBody();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="五-发送POST请求"><a href="#五-发送POST请求" class="headerlink" title="五 发送POST请求"></a>五 发送POST请求</h3><p> 使用RestTemplate post请求的时候主要可以通过三种方式实现</p>
+<ul>
+<li><strong>调用postForObject方法</strong></li>
+<li><strong>调用postEntity方法</strong></li>
+<li><strong>调用exchange方法</strong></li>
+</ul>
+<p> postForObject和postForEntity方法的区别主要在于可以在postForEntity方法中设置header的属性，当需要指定header的属性值的时候，使用postForEntity方法。exchange方法和postForEntity类似，但是更灵活，exchange还可以调用get、put、delete请求。</p>
+<p><strong>ContentType是表单</strong></p>
+<p>当ContentType的类型为表单类型时(content-type=application/x-www-form-urlencoded等)post请求的body不能是json也不能是map必须是MultiValueMap类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">getAccessToken</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  String url = <span class="string">&quot;http://xxx/nacos/v1/auth/login&quot;</span>;</span><br><span class="line">  <span class="comment">//因为ContentType是表单 所以用MultiValueMap去对表单进行设值</span></span><br><span class="line">  MultiValueMap&lt;String, Object&gt; paramMap = <span class="keyword">new</span> LinkedMultiValueMap&lt;String, Object&gt;();</span><br><span class="line">  paramMap.add(<span class="string">&quot;username&quot;</span>,<span class="string">&quot;nacos&quot;</span>);</span><br><span class="line">  paramMap.add(<span class="string">&quot;password&quot;</span>,<span class="string">&quot;nacos&quot;</span>);</span><br><span class="line"></span><br><span class="line">  HttpHeaders headers = <span class="keyword">new</span> HttpHeaders();</span><br><span class="line">  headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); <span class="comment">//请求类型为表单 </span></span><br><span class="line"></span><br><span class="line">  HttpEntity&lt;MultiValueMap&lt;String, Object&gt;&gt; entity = <span class="keyword">new</span> HttpEntity&lt;&gt;(paramMap, headers);</span><br><span class="line">  ResponseEntity&lt;String&gt; response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);</span><br><span class="line">  <span class="keyword">return</span> response.getBody();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>ContentType是JSON</strong></p>
+<p>当ContentType是json的时候 就没有这么麻烦了 可以直接填充json格式的参数作为body</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(path = &quot;/test&quot;, method = RequestMethod.GET)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String url = <span class="string">&quot;https://xxx/web/message/view/unread&quot;</span>;</span><br><span class="line">        Map&lt;String, Object&gt; paramMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        paramMap.put(<span class="string">&quot;coupon&quot;</span>, <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">        HttpHeaders headers = <span class="keyword">new</span> HttpHeaders();</span><br><span class="line">        headers.setContentType(MediaType.APPLICATION_JSON);  <span class="comment">//设值contentType是application/json </span></span><br><span class="line">        headers.add(<span class="string">&quot;Cookie&quot;</span>, <span class="string">&quot;xxx&quot;</span>);  <span class="comment">//添加cookie</span></span><br><span class="line">        HttpEntity&lt;String&gt; entity = <span class="keyword">new</span> HttpEntity&lt;&gt;(JSON.toJSONString(paramMap), headers); <span class="comment">//这里body被转换成了json</span></span><br><span class="line">        ResponseEntity&lt;String&gt; response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);</span><br><span class="line">        <span class="keyword">return</span> response.getBody();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="六-发送GET请求"><a href="#六-发送GET请求" class="headerlink" title="六 发送GET请求"></a>六 发送GET请求</h3><p>restTemplate发送GET请求如果需要带参数 必须在url上填充占位符 示例如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 获取nacos中指定dataId的配置信息</span></span><br><span class="line"><span class="comment">    **/</span></span><br><span class="line">    <span class="meta">@RequestMapping(path = &quot;/getConfig&quot;, method = RequestMethod.GET)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getConfig</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取nacos的accessToken</span></span><br><span class="line">        String accessToken = getAccessToken();</span><br><span class="line">        accessToken = String.valueOf(JSON.parseObject(accessToken, Map.class).get(<span class="string">&quot;accessToken&quot;</span>));</span><br><span class="line"></span><br><span class="line">        String url = <span class="string">&quot;http://xxxx/nacos/v1/cs/configs?dataId=&#123;dataId&#125;&amp;group=&#123;group&#125;&amp;tenant=&#123;tenant&#125;&amp;accessToken=&#123;accessToken&#125;&amp;namespaceId=&#123;namespaceId&#125;&quot;</span>; <span class="comment">//注意这里url中的&#123;xx&#125;都是占位符</span></span><br><span class="line">        Map&lt;String, Object&gt; paramMap = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();  <span class="comment">//这里用map而不用MultiValueMap</span></span><br><span class="line">        paramMap.put(<span class="string">&quot;dataId&quot;</span>,<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line">        paramMap.put(<span class="string">&quot;group&quot;</span>,<span class="string">&quot;DEFAULT_GROUP&quot;</span>);</span><br><span class="line">        paramMap.put(<span class="string">&quot;tenant&quot;</span>,<span class="string">&quot;xx&quot;</span>);</span><br><span class="line">        paramMap.put(<span class="string">&quot;accessToken&quot;</span>, accessToken);</span><br><span class="line">        paramMap.put(<span class="string">&quot;namespaceId&quot;</span>,<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line"></span><br><span class="line">				<span class="comment">//设置请求头</span></span><br><span class="line">        HttpHeaders headers = <span class="keyword">new</span> HttpHeaders();</span><br><span class="line">        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);</span><br><span class="line"></span><br><span class="line">        HttpEntity&lt;MultiValueMap&lt;String, Object&gt;&gt; entity = <span class="keyword">new</span> HttpEntity&lt;&gt;(<span class="keyword">null</span>, headers); <span class="comment">//注意get请求时 这里填充的是null</span></span><br><span class="line">        ResponseEntity&lt;String&gt; response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, paramMap);</span><br><span class="line">        <span class="keyword">return</span> response.getBody();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2021/11/17/FAQ-RestTemplate%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" title="RestTemplate最佳实践" target="_blank" rel="external">http://example.com/2021/11/17/FAQ-RestTemplate最佳实践/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2021/11/23/FAQ-easyexcel%E4%BD%BF%E7%94%A8%E6%8A%A5%E9%94%99/" title="easyexcel使用报错"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2021/11/10/FAQ-Spring%20BeanPostProcessor%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" title="Spring BeanPostProcessor最佳实践"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>

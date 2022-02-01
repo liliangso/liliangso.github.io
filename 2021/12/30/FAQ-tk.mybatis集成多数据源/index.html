@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>tk.mybatis集成多数据源 | liliang的个人博客</title>
+  <meta name="description" content="pom 依赖123456789101112131415161718 &lt;dependency&gt;   &lt;groupId&gt;tk.mybatis&lt;&#x2F;groupId&gt;   &lt;artifactId&gt;mapper&lt;&#x2F;artifactId&gt;&lt;&#x2F;dependency&gt;&lt;dependency&gt;  &lt;groupId&gt;com.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tk.mybatis集成多数据源">
+<meta property="og:url" content="http://example.com/2021/12/30/FAQ-tk.mybatis%E9%9B%86%E6%88%90%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="pom 依赖123456789101112131415161718 &lt;dependency&gt;   &lt;groupId&gt;tk.mybatis&lt;&#x2F;groupId&gt;   &lt;artifactId&gt;mapper&lt;&#x2F;artifactId&gt;&lt;&#x2F;dependency&gt;&lt;dependency&gt;  &lt;groupId&gt;com.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/0022.png">
+<meta property="article:published_time" content="2021-12-30T06:37:52.813Z">
+<meta property="article:modified_time" content="2022-02-01T12:57:47.846Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FAQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/0022.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2021/12/30/FAQ-tk.mybatis%E9%9B%86%E6%88%90%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-UML/" class="title">UML</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-31T08:19:09.025Z" itemprop="datePublished">2022-01-31</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" class="title">代理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-26T14:49:18.927Z" itemprop="datePublished">2022-01-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">建造者</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-25T15:44:06.884Z" itemprop="datePublished">2022-01-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82/" class="title">抽象工厂</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-23T15:17:16.828Z" itemprop="datePublished">2022-01-23</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/" class="title">工厂方法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-23T09:43:37.149Z" itemprop="datePublished">2022-01-23</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#pom-%E4%BE%9D%E8%B5%96"><span class="toc-number">1.</span> <span class="toc-text">pom 依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="toc-number">2.</span> <span class="toc-text">配置类</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-FAQ-tk.mybatis集成多数据源" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      tk.mybatis集成多数据源
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/12/30/FAQ-tk.mybatis%E9%9B%86%E6%88%90%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" class="article-date">
+	  <time datetime="2021-12-30T06:37:52.813Z" itemprop="datePublished">2021-12-30</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/12/30/FAQ-tk.mybatis%E9%9B%86%E6%88%90%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 599(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 3(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="pom-依赖"><a href="#pom-依赖" class="headerlink" title="pom 依赖"></a>pom 依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>tk.mybatis<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mapper<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.20<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--分页可以不要--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.pagehelper<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>pagehelper-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置类"><a href="#配置类" class="headerlink" title="配置类"></a>配置类</h3><p><strong>主数据源</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@MapperScan(basePackages = &#123;&quot;com.xxx.dao.gmp&quot;&#125;,</span></span><br><span class="line"><span class="meta">        sqlSessionTemplateRef = &quot;druidSqlSessionTemplate&quot;,markerInterface = BaseMapper.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(prefix = &quot;spring.datasource.druid&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSourceProperties <span class="title">druidDataSourceProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DataSourceProperties();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">druidDataSource</span><span class="params">(<span class="meta">@Qualifier(&quot;druidDataSourceProperties&quot;)</span> DataSourceProperties druidDataSourceProperties)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> druidDataSourceProperties.initializeDataSourceBuilder().build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSourceTransactionManager <span class="title">druidTransactionManager</span><span class="params">(<span class="meta">@Qualifier(&quot;druidDataSource&quot;)</span> DataSource druidDataSource)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DataSourceTransactionManager(druidDataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlSessionTemplate <span class="title">druidSqlSessionTemplate</span><span class="params">(<span class="meta">@Qualifier(&quot;druidSqlSessionFactory&quot;)</span> SqlSessionFactory druidSqlSessionFactory)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SqlSessionTemplate(druidSqlSessionFactory);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">druidSqlSessionFactory</span><span class="params">(<span class="meta">@Qualifier(&quot;druidDataSource&quot;)</span> DataSource druidDataSource)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        SqlSessionFactoryBean bean = <span class="keyword">new</span> SqlSessionFactoryBean();</span><br><span class="line">        org.apache.ibatis.session.Configuration configuration = <span class="keyword">new</span> org.apache.ibatis.session.Configuration();</span><br><span class="line">        configuration.setMapUnderscoreToCamelCase(<span class="keyword">true</span>);</span><br><span class="line">        bean.setDataSource(druidDataSource);</span><br><span class="line">        bean.setConfiguration(configuration);</span><br><span class="line">        <span class="comment">//手动指定mapp.xml的位置</span></span><br><span class="line">        bean.setMapperLocations(<span class="keyword">new</span> PathMatchingResourcePatternResolver().getResources(<span class="string">&quot;classpath*:mapper/gmp/*Mapper.xml&quot;</span>));</span><br><span class="line">        <span class="keyword">return</span> bean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>第二数据源</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@MapperScan(basePackages = &#123;&quot;com.xxx.dao.cmd&quot;&#125;,</span></span><br><span class="line"><span class="meta">        sqlSessionTemplateRef = &quot;cmdSqlSessionTemplate&quot;,markerInterface = BaseMapper.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CMDDataSourceConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(prefix = &quot;spring.datasource.cmd&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSourceProperties <span class="title">cmdDataSourceProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DataSourceProperties();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">cmdDataSource</span><span class="params">(<span class="meta">@Qualifier(&quot;cmdDataSourceProperties&quot;)</span> DataSourceProperties cmdDataSourceProperties)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cmdDataSourceProperties.initializeDataSourceBuilder().build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSourceTransactionManager <span class="title">cmdTransactionManager</span><span class="params">(<span class="meta">@Qualifier(&quot;cmdDataSource&quot;)</span> DataSource cmdDataSource)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DataSourceTransactionManager(cmdDataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlSessionTemplate <span class="title">cmdSqlSessionTemplate</span><span class="params">(<span class="meta">@Qualifier(&quot;cmdSqlSessionFactory&quot;)</span> SqlSessionFactory cmdSqlSessionFactory)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SqlSessionTemplate(cmdSqlSessionFactory);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">cmdSqlSessionFactory</span><span class="params">(<span class="meta">@Qualifier(&quot;cmdDataSource&quot;)</span> DataSource cmdDataSource)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        SqlSessionFactoryBean bean = <span class="keyword">new</span> SqlSessionFactoryBean();</span><br><span class="line">        org.apache.ibatis.session.Configuration configuration = <span class="keyword">new</span> org.apache.ibatis.session.Configuration();</span><br><span class="line">        configuration.setMapUnderscoreToCamelCase(<span class="keyword">true</span>);</span><br><span class="line">        bean.setDataSource(cmdDataSource);</span><br><span class="line">        bean.setConfiguration(configuration);</span><br><span class="line">        <span class="comment">//手动指定mapp.xml的位置</span></span><br><span class="line">        bean.setMapperLocations(<span class="keyword">new</span> PathMatchingResourcePatternResolver().getResources(<span class="string">&quot;classpath*:mapper/cmd/*Mapper.xml&quot;</span>));</span><br><span class="line">        <span class="keyword">return</span> bean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>mapper</strong></p>
+<p><img src="/images/0022.png" alt="图1"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.gzhc365.arch.gmp.po.CMDServerInfo;</span><br><span class="line"><span class="keyword">import</span> tk.mybatis.mapper.common.Mapper;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CMDServerInfoDAO</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">CMDServerInfo</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.gzhc365.arch.gmp.po.Application;</span><br><span class="line"><span class="keyword">import</span> tk.mybatis.mapper.common.Mapper;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ApplicationDAO</span> <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">Application</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#主数据源配置</span></span><br><span class="line"><span class="meta">spring.datasource.druid.url</span> = <span class="string">jdbc:mysql://xxx:3306/xxdb?allowPublicKeyRetrieval=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;allowMultiQueries=true</span></span><br><span class="line"><span class="meta">spring.datasource.druid.username</span> = <span class="string">xxx</span></span><br><span class="line"><span class="meta">spring.datasource.druid.password</span> = <span class="string">xxx</span></span><br><span class="line"><span class="meta">spring.datasource.druid.driver-class-name</span> = <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">#第二数据源配置</span></span><br><span class="line"><span class="meta">spring.datasource.cmd.url</span> = <span class="string">jdbc:mysql://xxx:3306/yyDb?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false</span></span><br><span class="line"><span class="meta">spring.datasource.cmd.username</span> = <span class="string">yyy</span></span><br><span class="line"><span class="meta">spring.datasource.cmd.password</span> = <span class="string">yyy</span></span><br><span class="line"><span class="meta">spring.datasource.cmd.driver-class-name</span> = <span class="string">com.mysql.jdbc.Driver</span></span><br></pre></td></tr></table></figure>
+
+<p>多数据源的配置主要是相关配置类和properties配置文件的配置</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2021/12/30/FAQ-tk.mybatis%E9%9B%86%E6%88%90%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" title="tk.mybatis集成多数据源" target="_blank" rel="external">http://example.com/2021/12/30/FAQ-tk.mybatis集成多数据源/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2022/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82/" title="简单工厂"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2021/12/30/FAQ-SpringBoot%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA/" title="SpringBoot配置文件属性自动提示"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>

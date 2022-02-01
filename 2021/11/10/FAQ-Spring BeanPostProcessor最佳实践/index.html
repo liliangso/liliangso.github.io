@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Spring BeanPostProcessor最佳实践 | liliang的个人博客</title>
+  <meta name="description" content="BeanPostProcessor接口的作用是在Spring bean 实例化完成后(执行完initializeBean)之后，初始化之前(执行bean的初始化方法)对Bean添加一些自定义的处理逻辑。也就是说执行beanProcessor方法是在bean实例化之后 此时bean的属性值都已经被赋值好了。另外需要注意的是 beanProcessor的实现类一定要被Spring托管才能生效。 一、B">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring BeanPostProcessor最佳实践">
+<meta property="og:url" content="http://example.com/2021/11/10/FAQ-Spring%20BeanPostProcessor%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="BeanPostProcessor接口的作用是在Spring bean 实例化完成后(执行完initializeBean)之后，初始化之前(执行bean的初始化方法)对Bean添加一些自定义的处理逻辑。也就是说执行beanProcessor方法是在bean实例化之后 此时bean的属性值都已经被赋值好了。另外需要注意的是 beanProcessor的实现类一定要被Spring托管才能生效。 一、B">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/Users/liliang/%E7%AC%94%E8%AE%B0/Images/053.png">
+<meta property="article:published_time" content="2021-11-10T13:53:16.193Z">
+<meta property="article:modified_time" content="2022-02-01T12:44:08.848Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FAQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/Users/liliang/%E7%AC%94%E8%AE%B0/Images/053.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2021/11/10/FAQ-Spring%20BeanPostProcessor%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/31/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-UML/" class="title">UML</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-31T08:19:09.025Z" itemprop="datePublished">2022-01-31</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/26/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/" class="title">代理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-26T14:49:18.927Z" itemprop="datePublished">2022-01-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="title">建造者</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-25T15:44:06.884Z" itemprop="datePublished">2022-01-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82/" class="title">抽象工厂</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-23T15:17:16.828Z" itemprop="datePublished">2022-01-23</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/01/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95/" class="title">工厂方法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-01-23T09:43:37.149Z" itemprop="datePublished">2022-01-23</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-FAQ-Spring BeanPostProcessor最佳实践" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spring BeanPostProcessor最佳实践
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/11/10/FAQ-Spring%20BeanPostProcessor%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="article-date">
+	  <time datetime="2021-11-10T13:53:16.193Z" itemprop="datePublished">2021-11-10</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/11/10/FAQ-Spring%20BeanPostProcessor%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.3k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 5(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>BeanPostProcessor接口的作用是在Spring bean 实例化完成后(执行完initializeBean)之后，初始化之前(执行bean的初始化方法)对Bean添加一些自定义的处理逻辑。也就是说执行beanProcessor方法是在bean实例化之后 此时bean的属性值都已经被赋值好了。另外需要注意的是 beanProcessor的实现类一定要被Spring托管才能生效。</p>
+<p><strong>一、BeanPostProcessor示例</strong></p>
+<ul>
+<li><p><strong>实体类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;spring.datasource&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceProperty</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String userName;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过<span class="doctag">@PostConstruct</span>来标记这个init方法为bean的初始化方法</span></span><br><span class="line"><span class="comment">     **/</span></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//这条语句会在 beanprocessor的postProcessBeforeInitialization方法执行之后执行 2</span></span><br><span class="line">        System.out.println(<span class="string">&quot;执行初始化方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUserName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserName</span><span class="params">(String userName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.userName = userName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPassword</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> password;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPassword</span><span class="params">(String password)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.password = password;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>配置</strong></p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.datasource.username</span>=<span class="string">test</span></span><br><span class="line"><span class="meta">spring.datasource.password</span>=<span class="string">12345678</span></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>自定义的BeanPostProcessor实现类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这个类一定要被spring容器托管(也就是要能够被spring识别为一个bean) postProcessBeforeInitialization 和 </span></span><br><span class="line"><span class="comment">//postProcessAfterInitialization才会生效</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBeanPostProcessor</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * bean实例化前处理</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> bean</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> beanName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> BeansException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> DataSourceProperty) &#123;</span><br><span class="line">  					<span class="comment">//这条语句是最先打印的 1  DataSourceProperty 此时它的两个属性是已经被赋值了的</span></span><br><span class="line">            System.out.println(<span class="string">&quot;dataSourceProperty 初始化前执行 dataSourceProperty&quot;</span> );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * bean实例化后处理</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> bean</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> beanName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> BeansException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> DataSourceProperty) &#123;</span><br><span class="line">            <span class="comment">//这条语句是最后打印的</span></span><br><span class="line">            System.out.println(<span class="string">&quot;dataSourceProperty 初始后执行&quot;</span> );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>结果</strong></p>
+<p><img src="/Users/liliang/%E7%AC%94%E8%AE%B0/Images/053.png" alt="image-20211110222202508"></p>
+</li>
+</ul>
+<p><strong>二、为什么BeanPostProcessor必须被Spring托管才能生效</strong></p>
+<p>关于这一点可以查看源码</p>
+<ul>
+<li><p><strong>第一步</strong></p>
+<p>当Spring容器启动时 会先执行AbstractApplicationContext类的refresh方法 通过该方法去初始化我们的Spring容器 源码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractApplicationContext</span> <span class="keyword">extends</span> <span class="title">DefaultResourceLoader</span></span></span><br><span class="line"><span class="class">		<span class="keyword">implements</span> <span class="title">ConfigurableApplicationContext</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">		<span class="keyword">synchronized</span> (<span class="keyword">this</span>.startupShutdownMonitor) &#123;</span><br><span class="line">			<span class="comment">//省略前面若干方法</span></span><br><span class="line">			prepareBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//此处省略若干方法</span></span><br><span class="line">				<span class="comment">// 向Spring容器注册beanProstProcessor</span></span><br><span class="line">				registerBeanPostProcessors(beanFactory);</span><br><span class="line">				beanPostProcess.end();</span><br><span class="line">				<span class="comment">//此处省略若干方法 完成Spring容器刷新工作</span></span><br><span class="line">				finishRefresh();</span><br><span class="line">			&#125;<span class="keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">				<span class="comment">//此处省略</span></span><br><span class="line">			&#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">				<span class="comment">//此处生路</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>第二步</strong></p>
+<p>从第一步 我们知道了当Spring容器在执行refresh方法的时候 会向容器中注册beanProcessor 下面接着看registerBeanPostProcessors(beanFactory)方法的逻辑 该方法的真正实现是在PostProcessorRegistrationDelegate类中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">PostProcessorRegistrationDelegate</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">registerBeanPostProcessors</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">			ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//核心方法 从beanFactory中获取容器中所有实现了BeanPostProcessor接口的bean的名称</span></span><br><span class="line">		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line">    <span class="comment">//此后省略若干方法</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>第三步</strong></p>
+<p>beanFactory.getBeanNamesForType() 这个方法真正的实现是在DefaultListableBeanFactory中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultListableBeanFactory</span> <span class="keyword">extends</span> <span class="title">AbstractAutowireCapableBeanFactory</span></span></span><br><span class="line"><span class="class">		<span class="keyword">implements</span> <span class="title">ConfigurableListableBeanFactory</span>, <span class="title">BeanDefinitionRegistry</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> String[] getBeanNamesForType(<span class="meta">@Nullable</span> Class&lt;?&gt; type, <span class="keyword">boolean</span> includeNonSingletons, <span class="keyword">boolean</span> allowEagerInit) &#123;</span><br><span class="line">		<span class="keyword">if</span> (!isConfigurationFrozen() || type == <span class="keyword">null</span> || !allowEagerInit) &#123;</span><br><span class="line">			<span class="comment">//真正获取beanPostProcessor的名称的方法</span></span><br><span class="line">      <span class="keyword">return</span> doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//此处省略若干方法</span></span><br><span class="line">		<span class="keyword">return</span> resolvedBeanNames;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>第四步</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultListableBeanFactory</span> <span class="keyword">extends</span> <span class="title">AbstractAutowireCapableBeanFactory</span></span></span><br><span class="line"><span class="class">		<span class="keyword">implements</span> <span class="title">ConfigurableListableBeanFactory</span>, <span class="title">BeanDefinitionRegistry</span>, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">private</span> String[] doGetBeanNamesForType(ResolvableType type, <span class="keyword">boolean</span> includeNonSingletons, <span class="keyword">boolean</span> allowEagerInit) &#123;</span><br><span class="line">		List&lt;String&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 它会遍历Spring容器的beanDefinitionNames </span></span><br><span class="line">		<span class="keyword">for</span> (String beanName : <span class="keyword">this</span>.beanDefinitionNames) &#123;</span><br><span class="line">			  <span class="comment">//此处省略若干方法</span></span><br><span class="line">        <span class="comment">//如果类型是指定的类型 则将这个bean的名称加入到list中</span></span><br><span class="line">        <span class="comment">//对于BeanPostProcessor来说 此时type就是BeanPostProcessor</span></span><br><span class="line">				<span class="keyword">boolean</span> matchFound = isTypeMatch(beanName, type, allowFactoryBeanInit);</span><br><span class="line">				<span class="comment">//此处省略若干方法		</span></span><br><span class="line">				<span class="keyword">if</span> (matchFound) &#123;</span><br><span class="line">					result.add(beanName);</span><br><span class="line">				&#125;</span><br><span class="line">        <span class="comment">//此处省略若干方法</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> StringUtils.toStringArray(result);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现它最终还是需要通过遍历Spring容器中所有的beanName才能够将这个bean注册为BeanProcessor 如果这个BeanPostProcessor的实现类都没有被Spring托管 也就不可能被注册为beanProcessor 这也就是为什么beanProcessor的实现类</p>
+<p>必须被spring托管才能生效。</p>
+<p><strong>三、BeanPostProcessor执行的流程</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第一步 容器刷新</span></span><br><span class="line"><span class="number">1</span>、AbstractApplicationContext.refresh()</span><br><span class="line"><span class="comment">//第二步 完成beanFactory初始化</span></span><br><span class="line"><span class="number">2</span>、AbstractApplicationContext.finishBeanFactoryInitialization(beanFactory);  </span><br><span class="line"><span class="comment">//第三步 默认的beanFactory开始预实例化单例bean</span></span><br><span class="line"><span class="number">3</span>、DefaultListableBeanFactory.preInstantiateSingletons();</span><br><span class="line"><span class="comment">//第四步 开始根据bean的名称获取bean</span></span><br><span class="line"><span class="number">4</span>、AbstractBeanFactory.getBean(String name);</span><br><span class="line"><span class="comment">//第五步 执行doCreateBean方法 开始创建bean</span></span><br><span class="line"><span class="number">5</span>、AbstractAutowireCapableBeanFactory.doCreateBean()</span><br><span class="line"><span class="comment">//第六步 对bean进行初始化</span></span><br><span class="line">AbstractAutowireCapableBeanFactory.initializeBean()  </span><br><span class="line"><span class="comment">//第七步 开始遍历beanProcessor 执行beanProcessor的postProcessBeforeInitialization方法</span></span><br><span class="line">AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization();</span><br><span class="line"><span class="comment">//第八步 执行beanPostProcessor的后置方法</span></span><br><span class="line">AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsAfterInitialization();</span><br></pre></td></tr></table></figure>
+
+<p><strong>initializeBean源码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">initializeBean</span><span class="params">(String beanName, Object bean, <span class="meta">@Nullable</span> RootBeanDefinition mbd)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//此处省略若干方法</span></span><br><span class="line">		Object wrappedBean = bean;</span><br><span class="line">		<span class="keyword">if</span> (mbd == <span class="keyword">null</span> || !mbd.isSynthetic()) &#123;</span><br><span class="line">      <span class="comment">//执行beanPostProcessor的前置方法</span></span><br><span class="line">			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">//执行bean的初始化方法</span></span><br><span class="line">			invokeInitMethods(beanName, wrappedBean, mbd);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> BeanCreationException(</span><br><span class="line">					(mbd != <span class="keyword">null</span> ? mbd.getResourceDescription() : <span class="keyword">null</span>),</span><br><span class="line">					beanName, <span class="string">&quot;Invocation of init method failed&quot;</span>, ex);</span><br><span class="line">		&#125;</span><br><span class="line">  </span><br><span class="line">		<span class="keyword">if</span> (mbd == <span class="keyword">null</span> || !mbd.isSynthetic()) &#123;</span><br><span class="line">      <span class="comment">//执行beanPostProcessor的后置方法</span></span><br><span class="line">			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> wrappedBean;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>applyBeanPostProcessorsBeforeInitialization源码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">applyBeanPostProcessorsBeforeInitialization</span><span class="params">(Object existingBean, String beanName)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line"></span><br><span class="line">		Object result = existingBean;</span><br><span class="line">    <span class="comment">//遍历beanPostProcessor 执行前置方法</span></span><br><span class="line">		<span class="keyword">for</span> (BeanPostProcessor processor : getBeanPostProcessors()) &#123;</span><br><span class="line">			Object current = processor.postProcessBeforeInitialization(result, beanName);</span><br><span class="line">			<span class="keyword">if</span> (current == <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="keyword">return</span> result;</span><br><span class="line">			&#125;</span><br><span class="line">			result = current;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>applyBeanPostProcessorsAfterInitialization源码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">applyBeanPostProcessorsAfterInitialization</span><span class="params">(Object existingBean, String beanName)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line"></span><br><span class="line">		Object result = existingBean;</span><br><span class="line">		<span class="keyword">for</span> (BeanPostProcessor processor : getBeanPostProcessors()) &#123;</span><br><span class="line">			Object current = processor.postProcessAfterInitialization(result, beanName);</span><br><span class="line">			<span class="keyword">if</span> (current == <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="keyword">return</span> result;</span><br><span class="line">			&#125;</span><br><span class="line">			result = current;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2021/11/10/FAQ-Spring%20BeanPostProcessor%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" title="Spring BeanPostProcessor最佳实践" target="_blank" rel="external">http://example.com/2021/11/10/FAQ-Spring BeanPostProcessor最佳实践/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2021/11/17/FAQ-RestTemplate%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" title="RestTemplate最佳实践"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2021/11/06/FAQ%20@ConfigurationProperties%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E5%A4%8D%E6%9D%82%E7%B1%BB%E5%9E%8B/" title="ConfigurationProperties注解配置复杂类型"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>
