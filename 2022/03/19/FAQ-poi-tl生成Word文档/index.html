@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>poi-tl生成Word文档 | liliang的个人博客</title>
+  <meta name="description" content="poi-tl 是word模板引擎 可以根据word模板和数据生成word文档 利用poi-tl可以生成很多样式丰富的word poi-tl官方文档  一 poi-tl依赖12345&lt;dependency&gt;  &lt;groupId&gt;com.deepoove&lt;&#x2F;groupId&gt;  &lt;artifactId&gt;poi-tl&lt;&#x2F;artifactId&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="poi-tl生成Word文档">
+<meta property="og:url" content="http://example.com/2022/03/19/FAQ-poi-tl%E7%94%9F%E6%88%90Word%E6%96%87%E6%A1%A3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="poi-tl 是word模板引擎 可以根据word模板和数据生成word文档 利用poi-tl可以生成很多样式丰富的word poi-tl官方文档  一 poi-tl依赖12345&lt;dependency&gt;  &lt;groupId&gt;com.deepoove&lt;&#x2F;groupId&gt;  &lt;artifactId&gt;poi-tl&lt;&#x2F;artifactId&gt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/0050.png">
+<meta property="og:image" content="http://example.com/images/0051.png">
+<meta property="og:image" content="http://example.com/images/0052.png">
+<meta property="og:image" content="http://example.com/images/0053.png">
+<meta property="og:image" content="http://example.com/images/0054.png">
+<meta property="og:image" content="http://example.com/images/0055.png">
+<meta property="og:image" content="http://example.com/images/0056.png">
+<meta property="og:image" content="http://example.com/images/0057.png">
+<meta property="article:published_time" content="2022-03-19T12:51:53.618Z">
+<meta property="article:modified_time" content="2022-03-19T16:35:47.965Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FAQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/0050.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2022/03/19/FAQ-poi-tl%E7%94%9F%E6%88%90Word%E6%96%87%E6%A1%A3/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-springboot">
+          <a href="/categories/SpringBoot">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">SpringBoot</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXL-JOB/" rel="tag">XXL-JOB</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/19/FAQ-poi-tl%E7%94%9F%E6%88%90Word%E6%96%87%E6%A1%A3/" class="title">poi-tl生成Word文档</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-19T12:51:53.618Z" itemprop="datePublished">2022-03-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringBoot/">SpringBoot</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/19/SpringBoot-%E6%89%8B%E5%86%99starter/" class="title">SpringBoot手写starter</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-19T09:47:05.233Z" itemprop="datePublished">2022-03-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/16/FAQ-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E4%B8%8EgetResource()%E8%B7%AF%E5%BE%84%E5%88%86%E6%9E%90/" class="title">类加载机制与getResource()路径分析</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-16T15:35:21.329Z" itemprop="datePublished">2022-03-16</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringBoot/">SpringBoot</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/15/SpringBoot-%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%8602/" class="title">SpringBoot自动装配核心原理(二)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-15T13:58:46.248Z" itemprop="datePublished">2022-03-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringBoot/">SpringBoot</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/12/SpringBoot-%E9%9B%86%E6%88%90xxlJob/" class="title">SpringBoot集成XXL-JOB</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-12T04:03:27.735Z" itemprop="datePublished">2022-03-12</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-poi-tl%E4%BE%9D%E8%B5%96"><span class="toc-number">1.</span> <span class="toc-text">一 poi-tl依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">二 项目结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89-%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.</span> <span class="toc-text">三 示例</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-FAQ-poi-tl生成Word文档" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      poi-tl生成Word文档
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/03/19/FAQ-poi-tl%E7%94%9F%E6%88%90Word%E6%96%87%E6%A1%A3/" class="article-date">
+	  <time datetime="2022-03-19T12:51:53.618Z" itemprop="datePublished">2022-03-19</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/03/19/FAQ-poi-tl%E7%94%9F%E6%88%90Word%E6%96%87%E6%A1%A3/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.6k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 8(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p><strong>poi-tl</strong> 是word模板引擎 可以根据word模板和数据生成word文档 利用poi-tl可以生成很多样式丰富的word <a target="_blank" rel="noopener" href="http://deepoove.com/poi-tl/#_maven">poi-tl官方文档</a> </p>
+<h3 id="一-poi-tl依赖"><a href="#一-poi-tl依赖" class="headerlink" title="一 poi-tl依赖"></a>一 poi-tl依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.deepoove<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>poi-tl<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.11.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用poi-tl的时候因为有word模板文件 maven默认是不会打包的 所以需要设置一下maven的资源目录的配置 以便能够将doc文件打包到classpath下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 资源目录 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 设定主资源目录  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.docx<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>false<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 设定主资源目录  --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/*.docx<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="二-项目结构"><a href="#二-项目结构" class="headerlink" title="二 项目结构"></a>二 项目结构</h3><p><img src="/images/0050.png" alt="图1"></p>
+<p><strong>完整的项目依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.poi.tl.test<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>poi-tl-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>8<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>8<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.deepoove<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>poi-tl<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.11.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--需要排除xalan依赖 不然会报错 Not supported: http://javax.xml.XMLConstants/property/accessExternalDTD--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>xalan<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>xalan<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-io<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-io<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.11.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">scope</span>&gt;</span>import<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 设定主资源目录  --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.docx<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>false<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 设定主资源目录  --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/*.docx<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>true<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="三-示例"><a href="#三-示例" class="headerlink" title="三 示例"></a>三 示例</h3><ul>
+<li><p><strong>文本</strong></p>
+<p>在word模板文件中使用&#123;&#123;var&#125;&#125;来表示一段文本 其中文本的数据类型包括</p>
+<ul>
+<li>String 普通文本</li>
+<li>TextRenderData 有样式的文本</li>
+<li>HyperlinkTextRenderData 超链接和锚点文本</li>
+<li>Object 调用 toString() 方法转化为文本</li>
+</ul>
+<p>文本换行使用\n字符</p>
+<p><strong>代码示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(path = &quot;/download&quot;, method = RequestMethod.GET)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">download</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">  OutputStream out = <span class="keyword">null</span>;</span><br><span class="line">  XWPFTemplate template = <span class="keyword">null</span>;</span><br><span class="line">  BufferedOutputStream bos = <span class="keyword">null</span>;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    String title = <span class="string">&quot;测试.docx&quot;</span>;</span><br><span class="line">    title = URLEncoder.encode(title, StandardCharsets.UTF_8.toString());</span><br><span class="line">    response.reset();</span><br><span class="line">    <span class="comment">//设置doc输出时中文不会乱码</span></span><br><span class="line">    response.setContentType(<span class="string">&quot;application/octet-stream; charset=UTF-8&quot;</span>);</span><br><span class="line">    response.setHeader(<span class="string">&quot;Content-Disposition&quot;</span>, <span class="string">&quot;attachment; filename*=utf-8&#x27;&#x27;&quot;</span> + title);</span><br><span class="line">    out = response.getOutputStream();</span><br><span class="line">    bos = <span class="keyword">new</span> BufferedOutputStream(out);</span><br><span class="line">    <span class="comment">//template.docx是word模板文件</span></span><br><span class="line">    template = XWPFTemplate  </span><br><span class="line">                <span class="comment">//compile 编译模板</span></span><br><span class="line">               .compile(Objects.requireNonNull(DocController.class.getClassLoader()</span><br><span class="line">                                .getResourceAsStream(<span class="string">&quot;template.docx&quot;</span>)))</span><br><span class="line">               <span class="comment">//render 渲染数据</span></span><br><span class="line">               .render(<span class="keyword">new</span> HashMap&lt;String, Object&gt;()&#123;&#123;</span><br><span class="line">        put(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;张三&quot;</span>);</span><br><span class="line">        put(<span class="string">&quot;author&quot;</span>, <span class="keyword">new</span> TextRenderData(<span class="string">&quot;000000&quot;</span>, <span class="string">&quot;张三&quot;</span>));</span><br><span class="line">        put(<span class="string">&quot;link&quot;</span>, <span class="keyword">new</span> HyperlinkTextRenderData(<span class="string">&quot;poi-tl官网&quot;</span>, <span class="string">&quot;http://deepoove.com&quot;</span>));</span><br><span class="line">      &#125;&#125;);</span><br><span class="line">    <span class="comment">//write 输出到流</span></span><br><span class="line">    template.write(bos);</span><br><span class="line">    bos.flush();</span><br><span class="line">  &#125;<span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">  &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">    PoitlIOUtils.closeQuietlyMulti(template, bos, out);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>模板</strong></p>
+<p>下面是word模板文件中(template.docx)的内容</p>
+<p><img src="/images/0051.png" alt="图2"></p>
+<p><strong>生成的word(测试.docx)的内容</strong></p>
+<p><img src="/images/0052.png" alt="图3"></p>
+</li>
+<li><p><strong>图片</strong></p>
+<p>在word模板文件中使用&#123;&#123;&#64;var&#125;&#125;来表示图片 其中图片的数据类型包括</p>
+<ul>
+<li>String 图片的url或本地路径 默认使用图片自身尺寸</li>
+<li>PictureRenderData</li>
+</ul>
+<p>推荐使用工厂 Pictures构建图片模型</p>
+<p><strong>代码示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(path = &quot;/download&quot;, method = RequestMethod.GET)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">download</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">        OutputStream out = <span class="keyword">null</span>;</span><br><span class="line">        XWPFTemplate template = <span class="keyword">null</span>;</span><br><span class="line">        BufferedOutputStream bos = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String title = <span class="string">&quot;测试.docx&quot;</span>;</span><br><span class="line">            title = URLEncoder.encode(title, StandardCharsets.UTF_8.toString());</span><br><span class="line">            response.reset();</span><br><span class="line">            <span class="comment">//设置doc输出时中文不会乱码</span></span><br><span class="line">            response.setContentType(<span class="string">&quot;application/octet-stream; charset=UTF-8&quot;</span>);</span><br><span class="line">            response.setHeader(<span class="string">&quot;Content-Disposition&quot;</span>, <span class="string">&quot;attachment; filename*=utf-8&#x27;&#x27;&quot;</span> + title);</span><br><span class="line">            out = response.getOutputStream();</span><br><span class="line">            bos = <span class="keyword">new</span> BufferedOutputStream(out);</span><br><span class="line">            BufferedImage bufferImage = <span class="keyword">new</span> BufferedImage(<span class="number">100</span>, <span class="number">100</span>, BufferedImage.TYPE_BYTE_GRAY);</span><br><span class="line"></span><br><span class="line">            template = XWPFTemplate</span><br><span class="line">                    .compile(Objects.requireNonNull(DocController.class.getClassLoader().getResourceAsStream(<span class="string">&quot;template.docx&quot;</span>)))</span><br><span class="line">                    .render(<span class="keyword">new</span> HashMap&lt;String, Object&gt;()&#123;&#123;</span><br><span class="line">                        put(<span class="string">&quot;image&quot;</span>, <span class="string">&quot;/xx/xx/poi-tl-test/target/classes/static/logo.png&quot;</span>); <span class="comment">// 指定图片路径</span></span><br><span class="line">                        put(<span class="string">&quot;image1&quot;</span>, Pictures.ofLocal(<span class="string">&quot;/xx/xx/test/poi-tl-test/target/classes/static/logo.png&quot;</span>).size(<span class="number">120</span>, <span class="number">120</span>).create()); <span class="comment">// 设置图片宽高</span></span><br><span class="line">                        put(<span class="string">&quot;streamImg&quot;</span>, Pictures.ofStream(<span class="keyword">new</span> FileInputStream(<span class="string">&quot;/xx/xx/poi-tl-test/target/classes/static/logo.jpeg&quot;</span>), PictureType.JPEG) <span class="comment">// 图片流</span></span><br><span class="line">                                .size(<span class="number">100</span>, <span class="number">120</span>).create());</span><br><span class="line">                        put(<span class="string">&quot;urlImg&quot;</span>, Pictures.ofUrl(<span class="string">&quot;http://deepoove.com/images/icecream.png&quot;</span>) <span class="comment">// 网络图片(注意网络耗时对系统可能的性能影响)</span></span><br><span class="line">                                .size(<span class="number">100</span>, <span class="number">100</span>).create());</span><br><span class="line">                        put(<span class="string">&quot;svg&quot;</span>, <span class="string">&quot;https://img.shields.io/badge/jdk-1.6%2B-orange.svg&quot;</span>); <span class="comment">// svg图片</span></span><br><span class="line">                        put(<span class="string">&quot;buffered&quot;</span>, Pictures.ofBufferedImage(bufferImage, PictureType.PNG) <span class="comment">//java图片</span></span><br><span class="line">                                .size(<span class="number">100</span>, <span class="number">100</span>).create());</span><br><span class="line">            &#125;&#125;);</span><br><span class="line">            template.write(bos);</span><br><span class="line">            bos.flush();</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            PoitlIOUtils.closeQuietlyMulti(template, bos, out);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>模板</strong></p>
+<p><img src="/images/0053.png" alt="图4"></p>
+<p><strong>生成的word(测试.docx)的内容</strong></p>
+<p><img src="/images/0054.png" alt="图5"></p>
+</li>
+<li><p><strong>表格</strong></p>
+<p>在word模板文件中使用 &#123;&#123;&#35;var&#125;&#125;来表示表格 其中表格的数据类型包括</p>
+<ul>
+<li>TableRenderData 推荐使用工厂Tables、Rows 和 Cells构建表格模型</li>
+</ul>
+<p><strong>代码示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一个2行2列的表格</span></span><br><span class="line">put(<span class="string">&quot;table0&quot;</span>, Tables.of(<span class="keyword">new</span> String[][] &#123;</span><br><span class="line">                <span class="keyword">new</span> String[] &#123; <span class="string">&quot;00&quot;</span>, <span class="string">&quot;01&quot;</span> &#125;,</span><br><span class="line">                <span class="keyword">new</span> String[] &#123; <span class="string">&quot;10&quot;</span>, <span class="string">&quot;11&quot;</span> &#125;</span><br><span class="line">            &#125;).border(BorderStyle.DEFAULT).create());</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/0055.png" alt="图6"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第0行居中且背景为蓝色的表格</span></span><br><span class="line">RowRenderData row0 = Rows.of(<span class="string">&quot;姓名&quot;</span>, <span class="string">&quot;学历&quot;</span>).textColor(<span class="string">&quot;FFFFFF&quot;</span>)</span><br><span class="line">      .bgColor(<span class="string">&quot;4472C4&quot;</span>).center().create();</span><br><span class="line">RowRenderData row1 = Rows.create(<span class="string">&quot;李四&quot;</span>, <span class="string">&quot;博士&quot;</span>);</span><br><span class="line">put(<span class="string">&quot;table1&quot;</span>, Tables.create(row0, row1));</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/0056.png" alt="图7"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 合并第1行所有单元格的表格</span></span><br><span class="line">RowRenderData row0 = Rows.of(<span class="string">&quot;列0&quot;</span>, <span class="string">&quot;列1&quot;</span>, <span class="string">&quot;列2&quot;</span>).center().bgColor(<span class="string">&quot;4472C4&quot;</span>).create();</span><br><span class="line">RowRenderData row1 = Rows.create(<span class="string">&quot;没有数据&quot;</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">MergeCellRule rule = MergeCellRule.builder().map(Grid.of(<span class="number">1</span>, <span class="number">0</span>), Grid.of(<span class="number">1</span>, <span class="number">2</span>)).build();</span><br><span class="line">put(<span class="string">&quot;table3&quot;</span>, Tables.of(row0, row1).mergeRule(rule).create());</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/0057.png" alt="图8"></p>
+<p>其他数据类型见官方文档！</p>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/03/19/FAQ-poi-tl%E7%94%9F%E6%88%90Word%E6%96%87%E6%A1%A3/" title="poi-tl生成Word文档" target="_blank" rel="external">http://example.com/2022/03/19/FAQ-poi-tl生成Word文档/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/03/19/SpringBoot-%E6%89%8B%E5%86%99starter/" title="SpringBoot手写starter"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>
