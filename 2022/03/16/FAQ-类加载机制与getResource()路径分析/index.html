@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>类加载机制与getResource()路径分析 | liliang的个人博客</title>
+  <meta name="description" content="一 类加载过程一个类在JVM中的生命周期主要要包括以下几个阶段 分别是 装载、链接、初始化、实例化、 使用、卸载  装载阶段 这个阶段主要是将class文件加载到JVM的方法区&#x2F;元空间   连接阶段 这个阶段又被细分为3个阶段 分别是 验证、准备、解析 连接阶段的主要作用是将class文件中变量的符号引用 转为直接引用  验证 确认读取文件类型的正确性，即class是否符合Java规范并且不会损害">
+<meta property="og:type" content="article">
+<meta property="og:title" content="类加载机制与getResource()路径分析">
+<meta property="og:url" content="http://example.com/2022/03/16/FAQ-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E4%B8%8EgetResource()%E8%B7%AF%E5%BE%84%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一 类加载过程一个类在JVM中的生命周期主要要包括以下几个阶段 分别是 装载、链接、初始化、实例化、 使用、卸载  装载阶段 这个阶段主要是将class文件加载到JVM的方法区&#x2F;元空间   连接阶段 这个阶段又被细分为3个阶段 分别是 验证、准备、解析 连接阶段的主要作用是将class文件中变量的符号引用 转为直接引用  验证 确认读取文件类型的正确性，即class是否符合Java规范并且不会损害">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-16T15:35:21.329Z">
+<meta property="article:modified_time" content="2022-03-19T08:29:35.233Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FAQ">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2022/03/16/FAQ-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E4%B8%8EgetResource()%E8%B7%AF%E5%BE%84%E5%88%86%E6%9E%90/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-springboot">
+          <a href="/categories/SpringBoot">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">SpringBoot</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXL-JOB/" rel="tag">XXL-JOB</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">15</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/16/FAQ-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E4%B8%8EgetResource()%E8%B7%AF%E5%BE%84%E5%88%86%E6%9E%90/" class="title">类加载机制与getResource()路径分析</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-16T15:35:21.329Z" itemprop="datePublished">2022-03-16</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringBoot/">SpringBoot</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/15/SpringBoot-%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%8602/" class="title">SpringBoot自动装配核心原理(二)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-15T13:58:46.248Z" itemprop="datePublished">2022-03-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringBoot/">SpringBoot</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/12/SpringBoot-%E9%9B%86%E6%88%90xxlJob/" class="title">SpringBoot集成XXL-JOB</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-12T04:03:27.735Z" itemprop="datePublished">2022-03-12</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/09/FAQ-ForkJoin%E4%B8%8E%E5%B9%B6%E8%A1%8C%E6%B5%81/" class="title">ForkJoin与并行流</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-09T14:12:44.763Z" itemprop="datePublished">2022-03-09</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/SpringBoot/">SpringBoot</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/03/02/SpringBoot-%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%8601/" class="title">SpringBoot自动装配核心原理(一)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-03-02T14:14:20.003Z" itemprop="datePublished">2022-03-02</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">一 类加载过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-getResource-%E7%9A%84%E5%87%A0%E7%A7%8D%E8%B7%AF%E5%BE%84"><span class="toc-number">2.</span> <span class="toc-text">二 getResource() 的几种路径</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-FAQ-类加载机制与getResource()路径分析" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      类加载机制与getResource()路径分析
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/03/16/FAQ-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E4%B8%8EgetResource()%E8%B7%AF%E5%BE%84%E5%88%86%E6%9E%90/" class="article-date">
+	  <time datetime="2022-03-16T15:35:21.329Z" itemprop="datePublished">2022-03-16</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/03/16/FAQ-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E4%B8%8EgetResource()%E8%B7%AF%E5%BE%84%E5%88%86%E6%9E%90/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 7(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="一-类加载过程"><a href="#一-类加载过程" class="headerlink" title="一 类加载过程"></a>一 类加载过程</h3><p>一个类在JVM中的生命周期主要要包括以下几个阶段 分别是 <strong>装载</strong>、<strong>链接</strong>、<strong>初始化</strong>、<strong>实例化</strong>、 <strong>使用</strong>、<strong>卸载</strong></p>
+<ul>
+<li><p><strong>装载阶段</strong></p>
+<p>这个阶段主要是将class文件加载到JVM的方法区/元空间 </p>
+</li>
+<li><p><strong>连接阶段</strong></p>
+<p>这个阶段又被细分为3个阶段 分别是 <strong>验证</strong>、<strong>准备</strong>、<strong>解析</strong> 连接阶段的主要作用是将class文件中变量的符号引用 转为直接引用</p>
+<ul>
+<li><strong>验证</strong> 确认读取文件类型的正确性，即class是否符合Java规范并且不会损害JVM的完整性。主要是检查代码是否有格式错误。</li>
+<li><strong>准备</strong> 为静态成员变量分配内存同时设置默认初始值。静态变量的初值为jvm默认的初值，而不是我们在程序中设定的初值。(仅包含类变量,不包含实例变量)　</li>
+<li><strong>解析</strong> 把符号引用转为直接引用的过程。例如将变量名转为内存地址。以后使用这个成员变量时，就直接去这个内存地址去找了。同时类的成员方法也会被映射到某个内存地址以待调用。</li>
+</ul>
+</li>
+<li><p><strong>初始化阶段</strong></p>
+<p>类的初始化阶段会为静态成员变量赋予正确的初始值，并且调用类中所有的静态代码块。—调用静态成员变量的初始化代码。例如类中定义了一个静态成员变量static int a = 1; 之前准备阶段已经为变量a分配了内存空间，并且将a的值设为了0，此时才会将a的值设为1。—调用类中所有的静态代码块。static{……} 事实上，编译阶段Java编译器会把类中所有的静态变量初始化代码和静态代码块封装到一个方法中去，此时JVM会调用这个方法。方法程序员不能调用，只能被JVM调用。方法只在初始化阶段执行且只被执行一次。因此静态变量只被初始化一次，静态方法只被执行一次。</p>
+</li>
+<li><p><strong>实例化阶段</strong></p>
+<p>在类的初始化完成之后，这个类就随时可以使用了。但是此时只能使用该类的静态成员(变量和方法)。<br>当创建一个类的对象时(例：使用new关键字)，此时进行的是类的实例化操作。</p>
+<ul>
+<li>在堆中为实例变量分配内存空间。</li>
+<li>调用类中所有的实例代码块。{……}</li>
+<li>调用相应的构造方法。</li>
+</ul>
+</li>
+</ul>
+<p>事实上，编译阶段Java编译器会把类中所有的实例变量初始化代码和实例代码块封装到一个方法中去，此时JVM会调用这个方法。方法程序员不能调用，只能被JVM调用。方法在每次实例化时都会被执行。实例代码块按源文件顺序执行，最后才执行构造方法</p>
+<p>并不是所有时候这七个阶段都是顺序进行的，其中加载、验证、准备、初始化、卸载是固定顺序开始的，解析阶段不一定。解析在某些情况下可以在初始化阶段之后再开始，这也是为了支持<strong>运行时绑定</strong>（也成为动态绑定）</p>
+<p><strong>概念剖析</strong></p>
+<ul>
+<li><strong>符号引用</strong> 其实就是我们在写代码的过程中声明的那些变量</li>
+<li><strong>直接引用</strong> 直接引用是将这些符号引用 变成了一个个的真实的内存地址</li>
+<li><strong>主动使用</strong> JAVA中对类的使用有两种方式 分别是主动使用和被动使用 第一次主动使用才进行初始化,之后就不再初始化 主动使用包含7种情况<ul>
+<li>创建类的实例 new 操作符</li>
+<li>访问某个类或接口的静态变量 或者对静态变量进行赋值 静态常量是不会触发类的初始化的</li>
+<li>调用类的静态方法</li>
+<li>反射 Class.forName(“com.xxx.xxx”) </li>
+<li>初始化一个类的子类 父类会初始化</li>
+<li>Java虚拟机启动时被标明为启动类的类 包含main方法的类</li>
+<li>JDK7开始提供的动态语言支持,java.lang.invoke.MethodHandle</li>
+</ul>
+</li>
+<li><strong>被动使用</strong> 除了主动使用的7种情况,其他使用Java类的方式都被看作是对类的被动使用,都不会导致类的<code>初始化</code>,但是依然会对类进行<strong>装载</strong>和<strong>连接</strong></li>
+</ul>
+<p><strong>类的主动使用和被动使用案例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test2</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;this is Test2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="comment">//类的主动使用案例</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//第一种 使用new 操作符 触发类的初始化</span></span><br><span class="line">        <span class="comment">//People people = new People();</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//第二种 访问类的静态变量 触发初始化 如果访问的是静态常量是不会触发初始化的</span></span><br><span class="line">        <span class="comment">//String attr = People.attr;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//第二种的变种 为类的静态变量赋值 触发类的初始化</span></span><br><span class="line">        <span class="comment">//People.attr2  = &quot;This is People attr2&quot;;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//第三种 子类初始化 触发父类初始化</span></span><br><span class="line">        <span class="comment">//Man man = new Man();</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//第四种 调用类的静态方法 触发初始化</span></span><br><span class="line">        <span class="comment">//People.sayHello();</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//第五种 反射触发类的初始化</span></span><br><span class="line">        <span class="comment">//Class&lt;?&gt; people = Class.forName(&quot;com.springboot.test.test1.People&quot;);</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//第六种 执行一个类的main方法 触发类的初始化</span></span><br><span class="line">        <span class="comment">//前面5种示例都会先输出一句话 this is Test2 证明Test2类是最先被初始化的</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//类的被动使用案例</span></span><br><span class="line">        <span class="comment">//第一种 这种不会触发类的初始化 是类的被动使用</span></span><br><span class="line">        People[] people = <span class="keyword">new</span> People[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//第二种</span></span><br><span class="line">        <span class="comment">//System.out.println(People.attr3);</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">People</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;This is People&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String attr = <span class="string">&quot;This is People attr&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String attr2;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String attr3 = <span class="string">&quot;This is People attr3&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sayHello2</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hello2&quot;</span> + name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Man</span> <span class="keyword">extends</span> <span class="title">People</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;This is Man&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二-getResource-的几种路径"><a href="#二-getResource-的几种路径" class="headerlink" title="二 getResource() 的几种路径"></a>二 getResource() 的几种路径</h3><p>在Java中获取资源的时候，经常用到getResource和getResourceAsStream，下面总结一下这两种资源获取源文件的路径差异</p>
+<ul>
+<li><p><strong>Class.getResource(String path)</strong></p>
+<p>path 不以/开头时 就是以该class文件所在包作为资源的根路径</p>
+<p>path 以/开头的时候 就是从classpath根路径去获取资源</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(Test.class.getResource(<span class="string">&quot;&quot;</span>));</span><br><span class="line">        System.out.println(Test.class.getResource(<span class="string">&quot;/&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Class.getClassLoader().getResource(String path)</strong></p>
+<p>这种情况下path不能以/开头 通过类加载器去获取资源时 是使用的逐级向上委托的形式加载的 此时的/表示<strong>Boot ClassLoader</strong> 因为这个类加载器是C++实现的，所以加载范围为null 所以这种方式不能以/开头</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(Test.class.getClassLoader().getResource(<span class="string">&quot;&quot;</span>)); <span class="comment">//classpath根路径</span></span><br><span class="line">        System.out.println(Test.class.getClassLoader().getResource(<span class="string">&quot;/&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Class.getResourceAsStream(String path)</strong></p>
+<p>path 不以/开头时，默认是指所在类的相对路径，从这个相对路径下取资源</p>
+<p>path 以/开头时 则是从项目的classpath根下获取资源，就是要写相对于classpath根下的绝对路径</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">com </span><br><span class="line">   |-github </span><br><span class="line">          |-demo </span><br><span class="line">          |    |-A.class </span><br><span class="line">          |    |-1.txt </span><br><span class="line">          |-B.class </span><br><span class="line">          |-2.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">上面是模拟的文件树</span> </span><br><span class="line">相对路径：InputStream is= A.class.getResourceAsStream(&quot;1.txt&quot;)</span><br><span class="line">路径不是以/开头，说明这是一个相对路径，相对的是A.class这个文件，所以，这里的“1.txt”所指的正确位置是与A.class处于同一目录下的1.txt文件，这一文件是存在的，所引不会报错。</span><br><span class="line">如果我们按相对路径的方式通过A去加载2.txt，则路径应该这样描述：</span><br><span class="line">InputStream is= A.class.getResourceAsStream(&quot;../2.txt&quot;)</span><br><span class="line">用..表示上一级目录。</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Clss.getClassLoader().getResourceAsStream(String path)</strong></p>
+<p>path不能以/开头，默认则是从classpath根路径获取资源 如果以‘/’ 开头，则 返回的是classLoader加载器<strong>Boot ClassLoader</strong>的加载范围，所以返回的也是null，所以不能以/开头</p>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/03/16/FAQ-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6%E4%B8%8EgetResource()%E8%B7%AF%E5%BE%84%E5%88%86%E6%9E%90/" title="类加载机制与getResource()路径分析" target="_blank" rel="external">http://example.com/2022/03/16/FAQ-类加载机制与getResource()路径分析/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/03/15/SpringBoot-%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%8602/" title="SpringBoot自动装配核心原理(二)"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>
