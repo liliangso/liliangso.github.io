@@ -18,15 +18,15 @@
   
   
   <title>log4j不打印异常栈 | liliang的个人博客</title>
-  <meta name="description" content="​最近在线上系统的错误日志中发现了一个现象 : 代码里用log4j打印系统运行时异常堆栈信息，在错误日志中无法看到堆栈信息，只有异常信息。后来发现这个是jdk的一个优化。JVM 为了性能会做优化，如果频繁的抛出某个异常，会重新编译，不再打印异常堆栈。解决这个问题也比较简单，如果不想每次都去查前面的 log 去看堆栈，只要在启动参数加上 -XX:-OmitStackTraceInFastThrow，">
+  <meta name="description" content="log4j不打印异常栈">
 <meta property="og:type" content="article">
 <meta property="og:title" content="log4j不打印异常栈">
 <meta property="og:url" content="http://example.com/2021/11/05/FAQ-log4j%E4%B8%8D%E6%89%93%E5%8D%B0%E5%BC%82%E5%B8%B8%E6%A0%88/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="​最近在线上系统的错误日志中发现了一个现象 : 代码里用log4j打印系统运行时异常堆栈信息，在错误日志中无法看到堆栈信息，只有异常信息。后来发现这个是jdk的一个优化。JVM 为了性能会做优化，如果频繁的抛出某个异常，会重新编译，不再打印异常堆栈。解决这个问题也比较简单，如果不想每次都去查前面的 log 去看堆栈，只要在启动参数加上 -XX:-OmitStackTraceInFastThrow，">
+<meta property="og:description" content="log4j不打印异常栈">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-11-05T07:17:45.378Z">
-<meta property="article:modified_time" content="2022-03-19T16:18:52.164Z">
+<meta property="article:modified_time" content="2022-04-05T03:59:56.821Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="FAQ">
 <meta name="twitter:card" content="summary">
@@ -338,7 +338,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/11/05/FAQ-log4j%E4%B8%8D%E6%89%93%E5%8D%B0%E5%BC%82%E5%B8%B8%E6%A0%88/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 198(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 6(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 1(分)</span>
@@ -348,8 +348,18 @@
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>​最近在线上系统的错误日志中发现了一个现象 : 代码里用log4j打印系统运行时异常堆栈信息，在错误日志中无法看到堆栈信息，只有异常信息。后来发现这个是jdk的一个优化。JVM 为了性能会做优化，如果频繁的抛出某个异常，会重新编译，不再打印异常堆栈。<br>解决这个问题也比较简单，如果不想每次都去查前面的 log 去看堆栈，只要在启动参数加上 -XX:-OmitStackTraceInFastThrow，就可以禁用该优化，强制打印异常堆栈。这样可能会导致，log 文件过大，不过产线上今天之前的 log 文件都会被压缩，所以感觉问题也不大。</p>
-
+        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="密码错误" data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="554ebee2c3a5b3eb3fd4dad0c8a6618b8593191ef5b0253b10c8f69bc5c6d4a0">78c47586115909711fe6bec19d408f22b914adce952573cc2b2a2ca20d1ae925c4eebf455b64a70f4be4f4c1c615405aee10c60704d4c21f6c084b08f881b7254f430862ec6297c68af6f12d9874215846842f60b62924f83477280f6d8bf8c7155d6fe6440d3dfdce5a6515846bd652bc536785879cdd237f767e67bec4793b015780559ab2bfca2c02d2f80705dcf564902021d936bd7357915cbbc1c82ef01ab5c47f9c50ee8210069f2d664562e7906412889cb59e33ca99dd232ae049508dbc8ce4b07ff6a940a2f5807b54f8ea731218e6ac3256ddba550357fc0a67a143630d547a835cea105a3a7145cf1c7f0d6c81d61e07f14b0758fa5ee0e0bc1718aa56800c4e1ce3d70d88c2a627bbf44b40b6a4cbffcd5a307f5d33ed28f167e9902eb63041a56d125f09213379b324a867c97ecaa7f888c52fbeeb2d4cfd237642ecb97246ebd136225d77c8822fbf24a6e38dfa6f5299fd82cc7cbb64206325e0a161f626ed5c6c9e43b36c2a52e73ff4be596648d20139672b73cd736aca4ee7b55e8478a8172e72db436fd9a1fda1b17c14df8ff8c6d12a569730c3a3e6160125508ad3f3c769bf036c5601d74551d54a40669bfebcb4f3db661b8b7f7e26b0fee3a2866d7052268dae635e0c08b70333ca17c771abbf3b58f6ea80cb6515d78cd85ee55bcb916ef83c8db34a04bf4ee72580e37178cc0ec5c83cb3c853ac84cd7a24b496abeeccea7422295bf94a73a310055af38e96a84dcfe8363d8e241695e7ae7fc4d5ce51f9f95e8133d287bfb73994a3c2507d0f6c044d82bf81f51133487206ae99db92e13278126e63201e8258f0199279f3375d69fa28cbb80cf1e2cc75685445cde0335f10ea35be841a97e627b11611668e2ba6809a4f0484cc147bbc8a1ca85e868b66037f024e1a98204c9d6ee0379b5a0a73beaf1ced331793896813e213b1ffbbdacf47953fe26d342cd6acf08475104bbaeb8ec05cf97c8e922a45495796aec5780717c6ef0699cf6e8a8a68680a59f452005df414</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">请输入密码</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
       
     </div>
     <div class="article-footer">

@@ -18,23 +18,18 @@
   
   
   <title>SpringBoot配置文件属性自动提示 | liliang的个人博客</title>
-  <meta name="description" content="spring-boot-configuration-processor的作用 当我们再springboot的配置文件如application.properties 或者 application.yaml文件去填充配置的时候 会发现springboot配置文件会自动提示，但是我们自己自定义的一些配置无法提示。如图  要使得我们自定义的配置也能达到这样的效果(自动提示) 需要借助spring-boot">
+  <meta name="description" content="spring-boot-configuration-processor的作用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot配置文件属性自动提示">
 <meta property="og:url" content="http://example.com/2021/12/30/SpringBoot-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="spring-boot-configuration-processor的作用 当我们再springboot的配置文件如application.properties 或者 application.yaml文件去填充配置的时候 会发现springboot配置文件会自动提示，但是我们自己自定义的一些配置无法提示。如图  要使得我们自定义的配置也能达到这样的效果(自动提示) 需要借助spring-boot">
+<meta property="og:description" content="spring-boot-configuration-processor的作用">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/0018.png">
-<meta property="og:image" content="http://example.com/images/0019.png">
-<meta property="og:image" content="http://example.com/images/0020.png">
-<meta property="og:image" content="http://example.com/images/0021.png">
 <meta property="article:published_time" content="2021-12-30T06:24:09.936Z">
-<meta property="article:modified_time" content="2022-03-19T16:27:29.319Z">
+<meta property="article:modified_time" content="2022-04-05T03:56:27.209Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="SpringBoot">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/0018.png">
   <!-- Canonical links -->
   <link rel="canonical" href="http://example.com/2021/12/30/SpringBoot-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA/index.html">
   
@@ -343,7 +338,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/12/30/SpringBoot-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 302(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 6(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 1(分)</span>
@@ -353,24 +348,18 @@
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p><strong>spring-boot-configuration-processor的作用</strong></p>
-<p>当我们再springboot的配置文件如application.properties 或者 application.yaml文件去填充配置的时候 会发现springboot配置文件会自动提示，但是我们自己自定义的一些配置无法提示。如图</p>
-<p><img src="/images/0018.png" alt="图1"></p>
-<p>要使得我们自定义的配置也能达到这样的效果(自动提示) 需要借助spring-boot-configuration-processor 这个jar 同时需要配和使用@ConfigurationProperties注解来实现 </p>
-<p>spring-boot-configuration-processor的作用是生成配置的元数据信息，即在classes目录下的META-INF目录下生成spring-configuration-metadata.json文件，从而告诉spring这个jar包中有哪些自定义的配置</p>
-<p>还可以在resources目录下手动添加META-INF/additional-spring-configuration-metadata.json文件，这个文件是手动添加的，用于对spring-configuration-metadata.json进行补充，编译后会合并到spring-configuration-metadata.json中</p>
-<p><img src="/images/0019.png" alt="图2"></p>
-<p><strong>示例</strong></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/0020.png" alt="图3"></p>
-<p><strong>配置好之后一定要先编译 不然是不会生效的</strong>(执行maven的package或者install命令) </p>
-<p><strong>效果如下</strong> 自定义的配置 hc.custom.xx</p>
-<p><img src="/images/0021.png" alt="图4"></p>
-<p><strong>博客链接</strong></p>
-<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">https</span>:<span class="string">//www.cnblogs.com/tonglin0325/p/5344129.html</span></span><br></pre></td></tr></table></figure>
-
-
+        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="密码错误" data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="52e24e38cac9eb8c718f8cb27f9bcab5c9b5b1df692a070c4e257d8176dc77ce">78c47586115909711fe6bec19d408f22bef3f7c50a4d922ffdd38a0e0ce48664b87915805eb28e3e0dc9f14bd23ed532b56c27f26e980c3d2180f922393078a9504a997a6001fa3ddc42bdbdfc60e9ba7a052c5497b44f2b0d8c0873056dad7e4bbb5e8b852c30f2d237fe4e9adfec037335ab8fd6129928fda98ef9f0b2707ca034e0cb6a6ed10d26e18d4f07ab9d37954aa1e4c43f043c1b887f558eb3bec9b77d2a0f5f567d33ac90aa8e71336fe2bb3e5ae36b1ba80a0d94ae0d7ef21c6c946261c1e537eec03519c9cbf9636043402d1fa4a00d58ca84a427d030e6c4d6383800deaf0c6f979aa737a72984b2532a16455406cc4aa91d1870618e11ece03d67459143c3886c6874f652d579a0da67bc6df8d17b5f151ecd444233b0d2f1572c85830ff13b604dde6c3956057a2882a6fa819f3b008220eb79a0c4a8238e710d74b65d2f51769403e22b0d173a5ed8056a708831722679daf10e6acaa8437b34f02a5aaba310653f6e0e0321f43b8722895e4beff9f98761f883a9c8c6f58f81552cc59a3a41f45a7f9c1e9475cfec0b471fac794e03e2593bf6a6e404dd05c54b7f1c9332e2da925dc24536efbc73a6cfe531940835ed3eb7fb42c9a7d514eaaeeddb51676d088122c20cb04b110ad8fc440092642b367bda3953bc68f3be478332c7894d96f3488d1c2cc110d684663ea484e1238c1743eb46d0d2fdc2e473b65070eae30e7a92fc1124d282f427e89c63e7d6b9ae88d1ff6a26017eabe87ca197e999057f32ca6a89ac3c9c56cb84010f464766f33b91043f8b9a2b8dd815a37256ab992f6cc75e7ab4d4792cfe381b0d02a6438e9102d482c1b1d4c24e3f7cc55d18382b720a6483bcafe2cd656c63b90155987328847b10b33d930aed31c3bd48e0de2ef86a593d0ac9ccd840658df2d8c923f53c5b756f5875f619ef69fea38bffeabb3ea795c25b16c5d2e5cd131b64abb6edfa64c3d2a5c79f098f8050d45cf8285dad9054ef851ccce072a11d40251128be7268544d96343b49d47ddb29c3b310d1e4f6dd3bc5edcbf425cbcc22600856b1b169f5aad124f07f6227d242dcf89b9eadea0fe4cd22351a0b8296258e69411c012f872355eeff1c7ce2f5f5b63466941b7d0498b3bcc1a0112542e9d46647e74faf9d26a12a1af69db0a6c3f459307d5f906506d1c0bbf33798580e0c512853ec93724b63f125d1ca62dd0b863c03d90dda6a41f03ccdc09bf933aff0de841f8acf8f599e93a293bd8c1bc92c880bd4f97c7c3b8636976f7faf6f2c809d8c22d494791a04ddadf32bddb3a8c4a5f729c6567a92d9385f66ca2be610f9cad59b9252e8b83655097cb4f737cc62996150e6514d08425ed2e9b6d536b7564d89a92aa344d0a5efcc5ebbdc8f498195cb00b05eb85d5eb1cfc4a8d10f733aaa3164065477ad2d85ded12dd4ce11b19081d7615bd4c8160c74278d6572f540cbad96618a0b893894fd2fa450f1fb03e0a9ff3df283beaeb1dbe456e20836b94f7871ce868c7099e080d7522efa7bcdbadf14846a86fc2c88afe9f6fbe43c12554275db0d5101c2d119a2cdf01cb85563f06d1c59d8ff0e990d4edf5a841eace4fc1340004583af22b847808fceea8dcb2fb26370772c6b41e5f5fc3ca23cac28ab0a51ef560856f4766988597bca18ab0c55906a8f0874fc4adb8dbe5f49d3c5859ad6f254cec2093c0e82c38d90169e79d2851cc909de51b71278da30c6e837f6d0a89b6179e6a93a5fb006159b6f9a1c06f97b3304636c8390ffa5e6443a9bbd470f5615aca8f6cc4d52f1c228dc153351e7195ea7d27b300c6512d7a9ee7b72ee17f65c962d120e27f28b8a7bdc059e9ae9fb3eeb130231985993b94f2e042edbe4bfdfd7d8c99672512d48ed09b47862648c3f036734e68ced4d44c222888251b45f7859fed8649e9644e386617c5612b9d459663a9140387dbc0da4ee652ec88a99dffdffd7ec31f65855f5e99aa25caae5fb958025670daa72b79f919ded27d9826863cb565456ea4121f0cf17a629958a2fe7d7a0e60e4205925dd5d6351fa1d6da75136f39637f35db73f866aee05a78c61325ace2140396f9354546e0ec3a71413d6336cf74e4517b0fae0e76038cd880cc37c653acc3891a9a4fffb462e0581515d31840cd1fa8d33d59a0fa0da77276a5975d0c1d561557ef56489ec354b3a66b143d7f44b474bb1794f38c90736de7233ce01d17b30e860ddf99ae351580814a759e826b1e4566ac76ad0494d4f3bef9eb3cce6fec703d5d54881cc51268ef07fbd6f71b7241f25384b300f9cdf25cfb4c8987352f969ec5e688febd45ec9858a69cc2424d84cfedd88ae4c9941788d561a7503169ad93f735252c19716c40b23c573ad18f5cba81a6165b3975f2d8cd00337a37fffb1db221072cc960ae225721ba5cd132b64fc80cabf13314e0f7a796a98b9353859498b3d62b49beeae942fe81231a5eea423005deec9091ebe18b68bdb0807f98a1dd890a15c725b92a623c6a6dc2a45abab3b5b8a210db812e5ae1159738cf550f22625ee47cb05dd9d8b5c48132f73f70be748237d8a4d1bdbd0a2f9aa7b97bc34379bd9a5693f866f2cc8514c451d8f14a78f580c70be3b035361911364f3324ee6acc8b131637172191b5b68300f5a85c1ec272f6cb98f6993f4ef8c9ab175a88d449d867deefebab6886e6dc973a7eecca2f343cbfbe2a8991818af4b3ab29b2340272ce36673ad390fea1e6a90d985bbe5610c2c88794593022b4b0418752ee490fd3a6b1ed9bb3bf1d9beb0c63d9b4d39e2798f1eb312f45383142431fb1c4345773ee7d8aa0dd69ff01aeb427159e46af5c186336a9fa3a99a08d4674a1f0ce573e419621212d294bdcb3271ef5afc1cb91726265f5aaa696e3065ad8caef3c404fe81cf6ebb503776e46a86c387f94736bfc23f1f32e1abb06be136c2900a275c84e2c5a096100a2206518547a378db89abb78d042ac1ada225ad77a3a32fa97811d5103b42c8777e953d0a8762c0b4d0c801a1d12d74cd7945ed5a0a275d362e81feb787f6f9e9e83ce0521a57ea84ad8c9ec2da241d193d87290ce5ed5fad50b2655d42a119076f4983ead59f959516005231e62e150de45cb7b28730044491a8cd15093f90a3ffaa9df216a5b5b83ee321485ee0a83773e2cda3415a565b182a62a276ed1a86eaf966499aeeb5ebdfe90811e9f23d8f0ee43c3d930a13dc9c27290092c0e17898880349cb63dc43c8905910a6b68b02542bb3a79a72eccac49c6231585d7a6db487de453b61f9e37343848d48627cf646ad87cb0b255eda2ec5558bdb47416d4a165361a1c429aa88cea19c9c56a3f357cfef1ba7470321acb2aba65d13d5a16281f37b00f1057eba98c3d5c6d83fb03b2890099854ace50f0f75c5c278ea142715bdf7bb697e42b818fcf0ec1f44d19b81078d4c38b3c26a0fbf2454b245524f0c5b9f0b7b72ec6892b47acf69a3a4a28047195afdc35ad21334bd715e392ae3f372ae48de849d1069036e1678edce1e7f36a29fe5a32683c859f802b5c1c2f5e932e42dbf7bdafd7793c49ebaf00ddbd43f73a20f880cc77f406531f9f02c51c09102334355f4f1698fb497cb136f85cdb7d0c3296eb051edaf1e1232b4e83fb730cebb0795a895a7e8caf75396115d97b597c0d264b9062cf35f50e9d906b4b7997e3f18bb4e8f8b280d87dfb13788a140881d088a32cc89ae733d32cf856c245</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">请输入密码</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
       
     </div>
     <div class="article-footer">
