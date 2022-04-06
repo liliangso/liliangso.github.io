@@ -18,15 +18,15 @@
   
   
   <title>设计原则 | liliang的个人博客</title>
-  <meta name="description" content="开闭原则是指一个软件实体 如类、模块、函数应该对扩展开放，对修改关闭">
+  <meta name="description" content="开闭原则 是指一个软件实体 如类、模块、函数应该对扩展开放，对修改关闭。 依赖倒置原则 是指代码之间的发生依赖的时候 应该依赖其抽象(接口) 这样可以降低类与类之间的耦合性，提高系统稳定性 单一职责原则 是指一个类只能拥有一个变动的因素 也就是一个类只负责一个职责 单一职责其实就是告诉我们 类和方法都要设计的足够的小 接口隔离原则 一个类对另一个类的依赖应该建立在最小接口上；建立单一的接口 不要建">
 <meta property="og:type" content="article">
 <meta property="og:title" content="设计原则">
 <meta property="og:url" content="http://example.com/2022/01/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="开闭原则是指一个软件实体 如类、模块、函数应该对扩展开放，对修改关闭">
+<meta property="og:description" content="开闭原则 是指一个软件实体 如类、模块、函数应该对扩展开放，对修改关闭。 依赖倒置原则 是指代码之间的发生依赖的时候 应该依赖其抽象(接口) 这样可以降低类与类之间的耦合性，提高系统稳定性 单一职责原则 是指一个类只能拥有一个变动的因素 也就是一个类只负责一个职责 单一职责其实就是告诉我们 类和方法都要设计的足够的小 接口隔离原则 一个类对另一个类的依赖应该建立在最小接口上；建立单一的接口 不要建">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-01-22T13:40:18.206Z">
-<meta property="article:modified_time" content="2022-04-05T03:37:42.553Z">
+<meta property="article:modified_time" content="2022-04-06T12:44:24.695Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
@@ -338,7 +338,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 6(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 463(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 1(分)</span>
@@ -348,18 +348,14 @@
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="密码错误" data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="9862ab32179e63b8cadae5380a143c57eb51834487ce88c98849916066288d57">78c47586115909711fe6bec19d408f22bef3f7c50a4d922ffdd38a0e0ce48664198707b24294ba7802e4a35c824a54b07988801f846f6e349a30390b2a5e5a8c141f75a5965d39d9cdc8f3a0b36c8694065c03bfbb5690f155b33ff2edf0c6d0ad2147ff37453a42a1257a69c17645e8c24e5965d819971db26f7d8a4ca66b07ced4c56c4014ddc8d99f36a92cb47d12368e40d67d6f46834d0c25129036a07e704fcae9737e8b1481d51a3fd9f9022fd2034238d5c2e9b95e4859fea5e2dc23c050dbdecb931b520b4d4b188da2733496305f2d42b78f7ac8bf6ff8d496924ef4f3b85e36c369aacebbcd74c65c9918eb42a085237eaa6aef4cb8776f6f54417059bd2db72ba15bdc2b5920a28afa8676a2cd79fa39460a231dc8d08ba67253ebd697ad945587c9de70a89a5d966227f43cb7f2be6c2cbae1ca30dfe226dc6bb5ea831a9f3a4df51a639392aafa3df4dab988b15447abd462b476f2fadea80016f2e7921b041092e4bca6c5175bbfb813d61c2b3f21861cb366a67631de57ef5704674f841f54fb80bacb9922180bad8306bbfaaa20c0a9e8000160b3b6e58b42b80af452456e0927e8e269ad076febd359b60ea17cf6bf575477228dc600697520f4e3ad8cef229968ff223047f06e0a513bbeb7951ea37fe2f43825ea21d92eb68172849f3461bd97fed69ea38d4883b897481c387a102e6c6eddd81786dfe1752c46b178d0d2f3d36e2b705f2e7f77f5497ed5c9f05c1fbd673e07f84bfc143f515e87403f28e73283219bce12f14f224a1f85800e67bb85c4050c7342c26adca0a67a663cafba944f25b10a419d36faa901cc207e18b4d94339f129f69cd027c43fc4d8d9a81f9e9080310b6449cbdf48fd4111fa3c47ba7fccb5d1fdd932b82ebe94b3fcf679c7522152777c157e2b1b4a11028c08d2a1318faab862399d65fd6008aa5217a831c9041c3a98b900ecdeda99892736750b15a52f65f2d77b77a26c90a5b959ea66314cd380ee4a15978f1297afc05261d2391650659e972bbf8b055f4f876895f4530c6aca3ff2fa7d21aa1a647bc0d8fdbf374fcee56394accb1c5d11d2adbd423728c65b881c8f8ffd9d53b9f7c5ee8f31999c13c55b05d4f28438de844a43fe8c04e391eed72f96bb5d064d93ed2226bd740aa76a3a3e8666b09f4c438fd24283707854ed114009f957b787562aaa7370dfd2e7deeb4b10414f68a623710caf10e344dd869e87ebd305ede9c571b059e03f031a9b3e54f67c3f9d0572920bcea0697f9d95f636d5cdda7e4f4114fa2ef2c0134361d5135e1803c4f734013827686d6f24a5b1271ad7b928726d3cba28e2e831d8d01a3ef0b37a1ba8769a1f3c98f5fefda075a2770657d6d3e49723bc1862b8044aca8c0c4886c18b6036c6dfae30de597579839f6686d1bca0f54343d6bc5854c1b021a161e58f0f239bf4a97da39a32025550c21c3000f3430f4c9cc91a26b977b5ec41e7fa458184aae41c078c2f8e4f94f793430d82684cdc7a2d538a1b182fb0baca846cabfa25fd4326bed807a8d9f919814c3fc4e3422620e83c092ec8ae825579b26b9ceab933f7f2b8857a443cb416fb37dcaf776624cb482d50b6c332855598af80683d2c0b6424e344d0d41e72fb2622538d19465b2b5b6ea25ec65226b950307dc6fd8746285919baaf93a58a85dc3a47b4dcf8459304627e29fd922cb056c7fd88292bd98fbb42b8fbe55a50eb1adbab5258f27b902dc7d35b8ad2adb74a779c552db46962c673b791ec06dc6f91d0d5a78ce3ea64ae36ba2628e6db5a6ca0fdadd2a81ac5ba4541674f5fda5ef6548844fd0cf7578e77cd78e41e588d0ab9b1769d2e77c6a08e8d8734b436292edff1ab8738c55bebdd146084d177a0db3016bfe977ba112e4f553077ae66bbcc31d06194f2e7a4a4d8f10fddc703720f43b90eb2c7253c06736e6b47f042a9cf71ecc0badfc0c4f3a51b14814abcfc1d886a6f8d48c1084caf53e0d27b5fbcd3f7fa9710d97a7024152d5b785f88e28d9c68c3c93c920e5ef4c1a868b600cdd2e14a93d0e09ea75af51bebc182281d47edf7cb3b28a80cc5c85e390f32d141fd48b9510d56b3a44fe244782b976fca3a8aa4ad58cffac14a1bfff63d6f60865e6bccabb60fd8d3a6234188022e2d5efb7300fc6c8e36f38930531c19c374a0fc53c281eefe64e121f31a06c923d13ed559905ba493bcb93a484b281182093260cb8952df77d82cc9c16fb90e29d2cace1d878eebeb3fe060c5379787a17536e1a5dd9724618bd24e52cac58bb9658d81d6ab60bc73ba4ed7674c60c4b0a858aabc72462b7f39a60487205f771f78</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">请输入密码</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+        <p><strong>开闭原则</strong> 是指一个软件实体 如类、模块、函数应该对扩展开放，对修改关闭。</p>
+<p><strong>依赖倒置原则</strong> 是指代码之间的发生依赖的时候 应该依赖其抽象(接口) 这样可以降低类与类之间的耦合性，提高系统稳定性</p>
+<p><strong>单一职责原则</strong> 是指一个类只能拥有一个变动的因素 也就是一个类只负责一个职责 单一职责其实就是告诉我们 类和方法都要设计的足够的小</p>
+<p><strong>接口隔离原则</strong> 一个类对另一个类的依赖应该建立在最小接口上；建立单一的接口 不要建立过于庞大的接口</p>
+<p><strong>迪米特法则</strong> 又叫最少知道原则 是指一个对象应该尽量降低与其他类的耦合；迪米特法则其实也是告诉我们要依赖最小接口 而不是实现</p>
+<p><strong>里氏替换原则</strong> 它强调的是对父类与子类的一个约束 简单来说就是在声明变量(成员变量、局部变量、方法参数)的时候 应该要用父类引用指向子类对象 里氏替换原则要求 1、子类可以实现父类的抽象方法，但是不能覆盖父类的非抽象方法 2、子类可以增加自己特有的方法，3、子类在重载父类方法的时候 方法的参数要比父类更宽松 4、当子类实现父类方法的时候 方法的返回要比父类更加的严格。</p>
+<p><strong>合成复用原则</strong> 强调的是我们应该尽量减少通过继承的方式来进行代码的复用 更多的应该通过聚合或者组合的形式来进行代码复用</p>
+
       
     </div>
     <div class="article-footer">
