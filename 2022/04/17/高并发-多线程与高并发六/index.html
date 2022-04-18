@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>多线程与高并发(六) | liliang的个人博客</title>
+  <meta name="description" content="一 JMH(Java Microbenchmark Harness)JMH是一个基准测试套件工具 JMH与JMeter侧重点不一样 JMeter更多的是对rest api进行压测 而JMH关注的粒度更细 它发现的更多的是某块性能糟点的代码 然后对优化方案进行基准测试对比。 12JMH官网地址http:&#x2F;&#x2F;openjdk.java.net&#x2F;projects&#x2F;code-tools&#x2F;jmh&#x2F;  二 搭建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程与高并发(六)">
+<meta property="og:url" content="http://example.com/2022/04/17/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E5%85%AD/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一 JMH(Java Microbenchmark Harness)JMH是一个基准测试套件工具 JMH与JMeter侧重点不一样 JMeter更多的是对rest api进行压测 而JMH关注的粒度更细 它发现的更多的是某块性能糟点的代码 然后对优化方案进行基准测试对比。 12JMH官网地址http:&#x2F;&#x2F;openjdk.java.net&#x2F;projects&#x2F;code-tools&#x2F;jmh&#x2F;  二 搭建">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/0091.png">
+<meta property="article:published_time" content="2022-04-17T08:39:30.404Z">
+<meta property="article:modified_time" content="2022-04-18T13:52:01.812Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="高并发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/0091.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2022/04/17/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E5%85%AD/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-springboot">
+          <a href="/categories/SpringBoot">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">SpringBoot</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-thread">
+          <a href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">高并发</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-algorithm">
+          <a href="/categories/Algorithm">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">数据结构与算法</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a><span class="category-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXL-JOB/" rel="tag">XXL-JOB</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">四月 2022</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/04/17/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E5%85%AD/" class="title">多线程与高并发(六)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-04-17T08:39:30.404Z" itemprop="datePublished">2022-04-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/04/14/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E4%BA%94/" class="title">多线程与高并发(五)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-04-14T13:28:34.456Z" itemprop="datePublished">2022-04-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Algorithm/">Algorithm</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/04/11/%E7%AE%97%E6%B3%95-%E7%AE%97%E6%B3%95%E5%85%A5%E9%97%A8(%E4%B8%80)/" class="title">算法入门(一)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-04-11T12:46:07.213Z" itemprop="datePublished">2022-04-11</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/04/11/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E5%9B%9B/" class="title">多线程与高并发(四)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-04-11T12:36:21.683Z" itemprop="datePublished">2022-04-11</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/04/10/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" class="title">状态模式</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-04-10T12:57:38.455Z" itemprop="datePublished">2022-04-10</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-JMH-Java-Microbenchmark-Harness"><span class="toc-number">1.</span> <span class="toc-text">一 JMH(Java Microbenchmark Harness)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-%E6%90%AD%E5%BB%BAJMH%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83"><span class="toc-number">2.</span> <span class="toc-text">二 搭建JMH测试环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89-Disruptor"><span class="toc-number">3.</span> <span class="toc-text">三 Disruptor</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-高并发-多线程与高并发六" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      多线程与高并发(六)
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/04/17/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E5%85%AD/" class="article-date">
+	  <time datetime="2022-04-17T08:39:30.404Z" itemprop="datePublished">2022-04-17</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/04/17/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E5%85%AD/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 2.3k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 11(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="一-JMH-Java-Microbenchmark-Harness"><a href="#一-JMH-Java-Microbenchmark-Harness" class="headerlink" title="一 JMH(Java Microbenchmark Harness)"></a>一 JMH(Java Microbenchmark Harness)</h3><p>JMH是一个基准测试套件工具 JMH与JMeter侧重点不一样 JMeter更多的是对rest api进行压测 而JMH关注的粒度更细 它发现的更多的是某块性能糟点的代码 然后对优化方案进行基准测试对比。</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">JMH官网地址</span></span><br><span class="line"><span class="attr">http</span>:<span class="string">//openjdk.java.net/projects/code-tools/jmh/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="二-搭建JMH测试环境"><a href="#二-搭建JMH测试环境" class="headerlink" title="二 搭建JMH测试环境"></a>二 搭建JMH测试环境</h3><ul>
+<li><p><strong>引入JMH依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jmh<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jmh-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.34<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jmh<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jmh-generator-annprocess<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.34<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>idea中安装jmh的插件</strong> </p>
+</li>
+<li><p><strong>由于测试过程中需要用到注解 所以请确保idea中打开了注解相关配置</strong> Compiler –&gt; Annotation Processors —&gt; Enable annotation processing </p>
+<p><img src="/images/0091.png" alt="image-20220417170147806"></p>
+</li>
+<li><p><strong>业务类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PS</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;Integer&gt; nums = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        Random r = <span class="keyword">new</span> Random();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">            nums.add(<span class="number">1000000</span> + r.nextInt(<span class="number">1000000</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">foreach</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        nums.forEach(v -&gt; isPrime(v));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">parallel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        nums.stream().parallel().forEach(PS::isPrime);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isPrime</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt;= num/<span class="number">2</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num % i == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>测试类</strong></p>
+<p>jmh的测试类一定要写在src/test目录下 不然是JMH的注解不会生效 另外jmh 的测试类需要放在某个包下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.poi.tl.test.PS;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PSTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Benchmark</span> <span class="comment">//表示下面的方法要进行基准测试</span></span><br><span class="line">    <span class="meta">@Warmup(iterations = 1, time = 3)</span> <span class="comment">//预热 由于JVM中对特定代码会存在优化 预热对测试结果很重要 iterations = 1 表示调用1次方法 time 表示下一次调用的时间间隔 单位(秒)</span></span><br><span class="line">    <span class="meta">@Fork(5)</span> <span class="comment">//指定线程数(多少个线程去调用下面的方式)</span></span><br><span class="line">    <span class="meta">@BenchmarkMode(Mode.Throughput)</span> <span class="comment">//基准测试的模式 Mode.Throughput 吞吐量</span></span><br><span class="line">    <span class="meta">@Measurement(iterations = 1, time = 3)</span> <span class="comment">//总共测试多少次</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testPS</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        PS.foreach();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>测试报告</strong></p>
+<p>ops/s 意思是说每秒可以执行多少个操作(调用多少个这样的方法)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># JMH version: 1.34</span></span><br><span class="line"><span class="comment"># VM version: JDK 1.8.0_291, Java HotSpot(TM) 64-Bit Server VM, 25.291-b10</span></span><br><span class="line"><span class="comment"># VM invoker: /Library/Java/JavaVirtualMachines/jdk1.8.0_291.jdk/Contents/Home/jre/bin/java</span></span><br><span class="line"><span class="comment"># VM options: -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=61645:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8</span></span><br><span class="line"><span class="comment"># Blackhole mode: full + dont-inline hint (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)</span></span><br><span class="line"><span class="comment"># Warmup: 1 iterations, 3 s each</span></span><br><span class="line"><span class="comment"># Measurement: 1 iterations, 3 s each</span></span><br><span class="line"><span class="comment"># Timeout: 10 min per iteration</span></span><br><span class="line"><span class="comment"># Threads: 1 thread, will synchronize iterations</span></span><br><span class="line"><span class="comment"># Benchmark mode: Throughput, ops/time</span></span><br><span class="line"><span class="comment"># Benchmark: test.PSTest.testPS</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Run progress: 0.00% complete, ETA 00:00:30</span></span><br><span class="line"><span class="comment"># Fork: 1 of 5</span></span><br><span class="line"><span class="comment"># Warmup Iteration   1: 18.113 ops/s</span></span><br><span class="line">Iteration   1: 18.699 ops/s</span><br><span class="line"></span><br><span class="line"><span class="comment"># Run progress: 20.00% complete, ETA 00:00:28</span></span><br><span class="line"><span class="comment"># Fork: 2 of 5</span></span><br><span class="line"><span class="comment"># Warmup Iteration   1: 16.541 ops/s</span></span><br><span class="line">Iteration   1: 16.696 ops/s</span><br><span class="line"></span><br><span class="line"><span class="comment"># Run progress: 40.00% complete, ETA 00:00:21</span></span><br><span class="line"><span class="comment"># Fork: 3 of 5</span></span><br><span class="line"><span class="comment"># Warmup Iteration   1: 13.690 ops/s</span></span><br><span class="line">Iteration   1: 13.818 ops/s</span><br><span class="line"></span><br><span class="line"><span class="comment"># Run progress: 60.00% complete, ETA 00:00:14</span></span><br><span class="line"><span class="comment"># Fork: 4 of 5</span></span><br><span class="line"><span class="comment"># Warmup Iteration   1: 19.432 ops/s</span></span><br><span class="line">Iteration   1: 19.370 ops/s</span><br><span class="line"></span><br><span class="line"><span class="comment"># Run progress: 80.00% complete, ETA 00:00:07</span></span><br><span class="line"><span class="comment"># Fork: 5 of 5</span></span><br><span class="line"><span class="comment"># Warmup Iteration   1: 15.598 ops/s</span></span><br><span class="line">Iteration   1: 15.824 ops/s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Result <span class="string">&quot;test.PSTest.testPS&quot;</span>:</span><br><span class="line">  16.881 ±(99.9%) 8.617 ops/s [Average]</span><br><span class="line">  (min, avg, max) = (13.818, 16.881, 19.370), stdev = 2.238</span><br><span class="line">  CI (99.9%): [8.264, 25.499] (assumes normal distribution)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Run complete. Total time: 00:00:35</span></span><br><span class="line"></span><br><span class="line">REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on</span><br><span class="line">why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial</span><br><span class="line">experiments, perform baseline and negative tests that provide experimental control, make sure</span><br><span class="line">the benchmarking environment is safe on JVM/OS/HW level, ask <span class="keyword">for</span> reviews from the domain experts.</span><br><span class="line">Do not assume the numbers tell you what you want them to tell.</span><br><span class="line"></span><br><span class="line">Benchmark       Mode  Cnt   Score   Error  Units</span><br><span class="line">PSTest.testPS  thrpt    5  16.881 ± 8.617  ops/s</span><br><span class="line"></span><br><span class="line">Process finished with <span class="built_in">exit</span> code 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="三-Disruptor"><a href="#三-Disruptor" class="headerlink" title="三 Disruptor"></a>三 Disruptor</h3><p>Disruptor 性能极高 号称单机速度最快的MQ </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#disruptor主页</span></span><br><span class="line">https://lmax-exchange.github.io/disruptor/</span><br></pre></td></tr></table></figure>
+
+<p><strong>Disruptor的特点</strong> 无锁，高并发，使用环形Buffer，直接覆盖(不用清除)旧的数据，降低GC频率，实现了基于事件的生产者消费者模式</p>
+<p><strong>RingBuffer</strong> 环形队列 RingBuffer的序号指向下一个可用的元素 采用数组实现 没有首尾指针</p>
+<p><strong>Disruptor开发步骤</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1、定义Event(队列中需要处理的元素)</span><br><span class="line">2、定义Event工厂(生产者 用于填充队列)</span><br><span class="line">3、定义EventHandler(消费者 用于处理容器中的元素) </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>disruptor依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lmax<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>disruptor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p><strong>Event类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LongEvent</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> value;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(<span class="keyword">long</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;LogEvent&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;value=&quot;</span> + value +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>EventFactory类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LongEventFactory</span> <span class="keyword">implements</span> <span class="title">EventFactory</span>&lt;<span class="title">LongEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LongEvent <span class="title">newInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//之所以要用工厂去构建对象 而不是直接new对象 这里主要是考虑到效率问题 disruptor会在初始化的时候 会调用</span></span><br><span class="line">        <span class="comment">// Event工厂 将整个环形队列给占满 这样 环形队列的内存基本就可以固定了，可以减少GC的频率</span></span><br><span class="line">        <span class="comment">// 然后新来的值 只要覆盖原位置上的对象的属性即可</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LongEvent();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>EventHandler类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LongEventHandler</span> <span class="keyword">implements</span> <span class="title">EventHandler</span>&lt;<span class="title">LongEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onEvent</span><span class="params">(LongEvent event, <span class="keyword">long</span> sequence, <span class="keyword">boolean</span> endOfBatch)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        count++;</span><br><span class="line">        System.out.println(<span class="string">&quot;[&quot;</span> + Thread.currentThread().getName() + <span class="string">&quot;]&quot;</span> + event + <span class="string">&quot; 序号:&quot;</span> + sequence);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>测试类一</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main01</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//事件工厂</span></span><br><span class="line">        LongEventFactory factory = <span class="keyword">new</span> LongEventFactory();</span><br><span class="line">        <span class="comment">//环形队列的大小 环形队列的大小必须大于2</span></span><br><span class="line">        <span class="keyword">int</span> bufferSize = <span class="number">1024</span>;</span><br><span class="line">        <span class="comment">//disruptor构造器</span></span><br><span class="line">        Disruptor&lt;LongEvent&gt; disruptor = <span class="keyword">new</span> Disruptor&lt;LongEvent&gt;(factory, bufferSize, Executors.defaultThreadFactory());</span><br><span class="line">        <span class="comment">//连接事件处理器 LongEventHandler 负责消费消息</span></span><br><span class="line">        disruptor.handleEventsWith(<span class="keyword">new</span> LongEventHandler());</span><br><span class="line">        <span class="comment">//启动disruptor</span></span><br><span class="line">        disruptor.start();</span><br><span class="line">        <span class="comment">//获取环形队列</span></span><br><span class="line">        RingBuffer&lt;LongEvent&gt; ringBuffer = disruptor.getRingBuffer();</span><br><span class="line">        <span class="comment">//获取序列号</span></span><br><span class="line">        <span class="keyword">long</span> sequence = ringBuffer.next();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//获取这个序列号上的元素</span></span><br><span class="line">            LongEvent event = ringBuffer.get(sequence);</span><br><span class="line">            event.set(<span class="number">8888L</span>);</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">//发布消息到disruptor中</span></span><br><span class="line">            ringBuffer.publish(sequence);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>测试类二</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main02</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//事件工厂</span></span><br><span class="line">        LongEventFactory factory = <span class="keyword">new</span> LongEventFactory();</span><br><span class="line">        <span class="comment">//环形队列的大小 环形队列的大小必须大于2</span></span><br><span class="line">        <span class="keyword">int</span> bufferSize = <span class="number">1024</span>;</span><br><span class="line">        <span class="comment">//disruptor构造器</span></span><br><span class="line">        Disruptor&lt;LongEvent&gt; disruptor = <span class="keyword">new</span> Disruptor&lt;LongEvent&gt;(factory, bufferSize, DaemonThreadFactory.INSTANCE);</span><br><span class="line">        <span class="comment">//连接事件处理器</span></span><br><span class="line">        disruptor.handleEventsWith(<span class="keyword">new</span> LongEventHandler());</span><br><span class="line">        <span class="comment">//启动disruptor</span></span><br><span class="line">        disruptor.start();</span><br><span class="line">        <span class="comment">//获取环形队列</span></span><br><span class="line">        RingBuffer&lt;LongEvent&gt; ringBuffer = disruptor.getRingBuffer();</span><br><span class="line">        <span class="comment">//发布消息</span></span><br><span class="line">        EventTranslator&lt;LongEvent&gt; translator = <span class="keyword">new</span> EventTranslator&lt;LongEvent&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateTo</span><span class="params">(LongEvent event, <span class="keyword">long</span> sequence)</span> </span>&#123;</span><br><span class="line">                event.set(<span class="number">8888L</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        ringBuffer.publishEvent(translator);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//这个其实就是允许你传一个参 将这个参数设置为event中的值</span></span><br><span class="line">        EventTranslatorOneArg&lt;LongEvent, Long&gt; translator_2 = <span class="keyword">new</span> EventTranslatorOneArg&lt;LongEvent, Long&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateTo</span><span class="params">(LongEvent event, <span class="keyword">long</span> sequence, Long value)</span> </span>&#123;</span><br><span class="line">                event.set(value);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        ringBuffer.publishEvent(translator_2, <span class="number">888L</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//这个其实就是允许你传2个参 将这个参数设置为event中的值</span></span><br><span class="line">        EventTranslatorTwoArg&lt;LongEvent, Long, Long&gt; translator_3 = <span class="keyword">new</span> EventTranslatorTwoArg&lt;LongEvent, Long, Long&gt;() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">translateTo</span><span class="params">(LongEvent event, <span class="keyword">long</span> sequence, Long arg0, Long arg1)</span> </span>&#123;</span><br><span class="line">                event.set(arg0 + arg1);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        ringBuffer.publishEvent(translator_3, <span class="number">888L</span>, <span class="number">8882L</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>测试类三</strong></p>
+<p>指定多个消费者 之前的测试类一和测试类2都是有一个消费者 另外还有就是消费者消费过程中的异常该如何去处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main01</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//事件工厂</span></span><br><span class="line">        LongEventFactory factory = <span class="keyword">new</span> LongEventFactory();</span><br><span class="line">        <span class="comment">//环形队列的大小 环形队列的大小必须大于2</span></span><br><span class="line">        <span class="keyword">int</span> bufferSize = <span class="number">1024</span>;</span><br><span class="line">        <span class="comment">//disruptor构造器</span></span><br><span class="line">        Disruptor&lt;LongEvent&gt; disruptor = <span class="keyword">new</span> Disruptor&lt;LongEvent&gt;(factory, bufferSize, Executors.defaultThreadFactory());</span><br><span class="line">        LongEventHandler h1 = <span class="keyword">new</span> LongEventHandler();</span><br><span class="line">        LongEventHandler h2 = <span class="keyword">new</span> LongEventHandler();</span><br><span class="line">        <span class="comment">//为消费者指定异常处理器</span></span><br><span class="line">        disruptor.handleExceptionsFor(h1).with(<span class="keyword">new</span> ExceptionHandler&lt;LongEvent&gt;() &#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span> <span class="comment">//这个方法处理的是当消费消息的时候出了异常该如何处理</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleEventException</span><span class="params">(Throwable ex, <span class="keyword">long</span> sequence, LongEvent event)</span> </span>&#123;</span><br><span class="line">                ex.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span> <span class="comment">//这个方法是用于当消费者线程启动的时候出现异常该如何处理</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleOnStartException</span><span class="params">(Throwable ex)</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;Exception Start to Handle&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span> <span class="comment">//这个方法是用于当消费者线程shutdown的时候出现异常该如何处理</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleOnShutdownException</span><span class="params">(Throwable ex)</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;Exception Handle &quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">//连接事件处理器</span></span><br><span class="line">        disruptor.handleEventsWith(h1,h2);</span><br><span class="line">        <span class="comment">//启动disruptor</span></span><br><span class="line">        disruptor.start();</span><br><span class="line">        <span class="comment">//获取环形队列</span></span><br><span class="line">        RingBuffer&lt;LongEvent&gt; ringBuffer = disruptor.getRingBuffer();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i ++) &#123;</span><br><span class="line">            <span class="comment">//获取序列号</span></span><br><span class="line">            <span class="keyword">long</span> sequence = ringBuffer.next();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//获取这个序列号上的元素</span></span><br><span class="line">                LongEvent event = ringBuffer.get(sequence);</span><br><span class="line">                event.set(<span class="number">8888L</span>);</span><br><span class="line">            &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                <span class="comment">//发布消息到disruptor中</span></span><br><span class="line">                ringBuffer.publish(sequence);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        disruptor.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>Disruptor的生产者类型(ProducerType)</strong></p>
+<p>ProducerType有两种模式 Producer.MULTI和Producer.SINGLE 默认是MULTI 表示多线程模式下生产sequence 如果确认是单线程生产者 可以指定为SINGLE </p>
+<p>WaitStrategy是disruptor的等待策略 默认有八种 支持自定义</p>
+<ul>
+<li><strong>BlockingWaitStrategy</strong> 通过线程阻塞的方式 等待生产者唤醒 被唤醒后 再循环检查依赖的sequence是否已被消费</li>
+<li><strong>BusySpinWaitStrategy</strong> 线程一直自旋等待 比较消耗CPU</li>
+<li><strong>LiteBlockingWaitStrategy</strong> 轻量级的阻塞策略 也是通过线程阻塞的方式 等待生产者唤醒 与 BlockingWaitStrategy有些许差别 性能更好</li>
+<li><strong>LiteTimeoutBlockingWaitStrategy</strong> 与LiteBlockingWaitStrategy相比设置了线程阻塞的超时时间 超时后抛出异常</li>
+<li><strong>PhasedBackoffWaitStrategy</strong> 根据时间参数和传入的等待策略来决定使用哪种等待策略</li>
+<li><strong>TimeoutBlockingWaitStrategy</strong> 相对于BlockingWaitStrategy来说设置了等待时间 超过后抛异常</li>
+<li><strong>YieldingWaitStrategy</strong> 尝试100次然后线程调用Thread.yield()让出CPU</li>
+<li><strong>SleepingWaitStrategy</strong> 线程先sleep 等待</li>
+</ul>
+<p>下面是disruptor的构造器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Disruptor</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">  <span class="keyword">final</span> EventFactory&lt;T&gt; eventFactory,</span></span></span><br><span class="line"><span class="params"><span class="function">  <span class="keyword">final</span> <span class="keyword">int</span> ringBufferSize,</span></span></span><br><span class="line"><span class="params"><span class="function">  <span class="keyword">final</span> ThreadFactory threadFactory,</span></span></span><br><span class="line"><span class="params"><span class="function">  <span class="keyword">final</span> ProducerType producerType, //生产者类型 默认为MULTI</span></span></span><br><span class="line"><span class="params"><span class="function">  <span class="keyword">final</span> WaitStrategy waitStrategy)</span></span>&#123;&#125; <span class="comment">//WaitStrategy等待策略</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/04/17/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E5%85%AD/" title="多线程与高并发(六)" target="_blank" rel="external">http://example.com/2022/04/17/高并发-多线程与高并发六/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/04/14/%E9%AB%98%E5%B9%B6%E5%8F%91-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91%E4%BA%94/" title="多线程与高并发(五)"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+</body>
+</html>
