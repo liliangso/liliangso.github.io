@@ -17,21 +17,21 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>策略模式 | liliang的个人博客</title>
-  <meta name="description" content="策略模式 可以用来替代if else这种逻辑判断 核心是抽象出来一个公共的策略接口 下面的示例是一个利用策略模式 简单实现的一个计算器 一 策略接口123public interface Executor &amp;#123;    Number execute(Number p1, Number p2);&amp;#125;  二 策略实现1234567891011121314public class AddE">
+  <title>free命令中的buffer和cache的区别 | liliang的个人博客</title>
+  <meta name="description" content="一 命令执行free命令 会出现下面的显示 12345[root@localhost ~]# free -m             total       used       free     shared    buffers     cachedMem:          7869       7651        218          1        191       5081">
 <meta property="og:type" content="article">
-<meta property="og:title" content="策略模式">
-<meta property="og:url" content="http://example.com/2021/12/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5/index.html">
+<meta property="og:title" content="free命令中的buffer和cache的区别">
+<meta property="og:url" content="http://example.com/2022/04/25/FAQ-free%E5%91%BD%E4%BB%A4%E4%B8%ADbuffer%E5%92%8Ccache%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="策略模式 可以用来替代if else这种逻辑判断 核心是抽象出来一个公共的策略接口 下面的示例是一个利用策略模式 简单实现的一个计算器 一 策略接口123public interface Executor &amp;#123;    Number execute(Number p1, Number p2);&amp;#125;  二 策略实现1234567891011121314public class AddE">
+<meta property="og:description" content="一 命令执行free命令 会出现下面的显示 12345[root@localhost ~]# free -m             total       used       free     shared    buffers     cachedMem:          7869       7651        218          1        191       5081">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-12-19T12:00:24.342Z">
-<meta property="article:modified_time" content="2022-04-06T12:41:16.829Z">
+<meta property="article:published_time" content="2022-04-25T10:57:45.890Z">
+<meta property="article:modified_time" content="2022-04-25T11:08:20.566Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="FAQ">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://example.com/2021/12/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5/index.html">
+  <link rel="canonical" href="http://example.com/2022/04/25/FAQ-free%E5%91%BD%E4%BB%A4%E4%B8%ADbuffer%E5%92%8Ccache%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -314,21 +314,21 @@
   <div class="slimContent">
     <nav id="toc" class="article-toc">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-%E7%AD%96%E7%95%A5%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.</span> <span class="toc-text">一 策略接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-%E7%AD%96%E7%95%A5%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">二 策略实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89-%E7%AD%96%E7%95%A5%E7%9A%84%E5%AE%B9%E5%99%A8"><span class="toc-number">3.</span> <span class="toc-text">三 策略的容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B-%E6%B5%8B%E8%AF%95"><span class="toc-number">4.</span> <span class="toc-text">四 测试</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-%E5%91%BD%E4%BB%A4"><span class="toc-number">1.</span> <span class="toc-text">一 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-free-%E4%B8%ADbuffer-%E5%92%8C-cache-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.</span> <span class="toc-text">二 free 中buffer 和 cache 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89-%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">三 总结</span></a></li></ol>
     </nav>
   </div>
 </aside>
 
 <main class="main" role="main">
   <div class="content">
-  <article id="post-设计模式-策略" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-FAQ-free命令中buffer和cache的区别" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      策略模式
+      free命令中的buffer和cache的区别
     </h1>
   
 
@@ -336,29 +336,29 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2021/12/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5/" class="article-date">
-	  <time datetime="2021-12-19T12:00:24.342Z" itemprop="datePublished">2021-12-19</time>
+	<a href="/2022/04/25/FAQ-free%E5%91%BD%E4%BB%A4%E4%B8%ADbuffer%E5%92%8Ccache%E7%9A%84%E5%8C%BA%E5%88%AB/" class="article-date">
+	  <time datetime="2022-04-25T10:57:45.890Z" itemprop="datePublished">2022-04-25</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
   </span>
 
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
   </span>
 
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/12/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/04/25/FAQ-free%E5%91%BD%E4%BB%A4%E4%B8%ADbuffer%E5%92%8Ccache%E7%9A%84%E5%8C%BA%E5%88%AB/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 211(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 450(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 1(分)</span>
@@ -368,16 +368,28 @@
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>策略模式 可以用来替代if else这种逻辑判断 核心是抽象出来一个公共的策略接口 下面的示例是一个利用策略模式 简单实现的一个计算器</p>
-<h3 id="一-策略接口"><a href="#一-策略接口" class="headerlink" title="一 策略接口"></a>一 策略接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line">    <span class="function">Number <span class="title">execute</span><span class="params">(Number p1, Number p2)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h3 id="一-命令"><a href="#一-命令" class="headerlink" title="一 命令"></a>一 命令</h3><p>执行free命令 会出现下面的显示</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># free -m</span></span><br><span class="line">             total       used       free     shared    buffers     cached</span><br><span class="line">Mem:          7869       7651        218          1        191       5081</span><br><span class="line">-/+ buffers/cache:       2378       5490</span><br><span class="line">Swap:          478        139        339</span><br></pre></td></tr></table></figure>
 
-<h3 id="二-策略实现"><a href="#二-策略实现" class="headerlink" title="二 策略实现"></a>二 策略实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AddExecutor</span> <span class="keyword">implements</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Number <span class="title">execute</span><span class="params">(Number p1, Number p2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> p1.doubleValue() + p2.doubleValue();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubExecutor</span> <span class="keyword">implements</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Number <span class="title">execute</span><span class="params">(Number p1, Number p2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> p1.doubleValue() - p2.doubleValue();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以发现 </p>
+<ul>
+<li>对于第一行显示来说 total = used + free</li>
+<li>第一行的 buffers + cached + free 等于第二行的free 为什么会出现这种情况呢 因为buffers和cache其实也是内存的一部分，这部分特殊的内存是可以回收的，甚至如果需要我们还可以将这部分buffers和cache给释放出来</li>
+</ul>
+<h3 id="二-free-中buffer-和-cache-的区别"><a href="#二-free-中buffer-和-cache-的区别" class="headerlink" title="二 free 中buffer 和 cache 的区别"></a>二 free 中buffer 和 cache 的区别</h3><p>首先他们都是占用的内存</p>
+<ul>
+<li>buffer ：作为buffer cache的内存，是块设备的读写缓冲区 </li>
+<li>cache：作为page cache的内存， 文件系统的cache </li>
+</ul>
+<p>如果 cache 的值很大，说明cache住的文件数很多。如果频繁访问到的文件都能被cache住，那么磁盘的读IO 必会非常小</p>
+<p><strong>如何释放Cache Memory</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">To free pagecache:</span><br><span class="line"><span class="built_in">echo</span> 1 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">To free dentries and inodes:</span><br><span class="line"><span class="built_in">echo</span> 2 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">To free pagecache, dentries and inodes:</span><br><span class="line"><span class="built_in">echo</span> 3 &gt; /proc/sys/vm/drop_caches</span><br><span class="line"> </span><br><span class="line"><span class="comment">#注意，释放前最好sync一下，防止丢失数据，但是一般情况下没有必要手动释放内存</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="三-策略的容器"><a href="#三-策略的容器" class="headerlink" title="三 策略的容器"></a>三 策略的容器</h3><p>Calculator 类主要是提供一个或者一些方法来应用策略</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Calculator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Number <span class="title">calculate</span><span class="params">(Number a, Number b, Executor executor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> executor.execute(a, b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="四-测试"><a href="#四-测试" class="headerlink" title="四 测试"></a>四 测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StrategyTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Number result = Calculator.calculate(<span class="number">1</span>, <span class="number">2</span>, <span class="keyword">new</span> AddExecutor());</span><br><span class="line">        Number result2 = Calculator.calculate(<span class="number">1</span>, <span class="number">2</span>, <span class="keyword">new</span> SubExecutor());</span><br><span class="line">        System.out.println(result);</span><br><span class="line">        System.out.println(result2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<h3 id="三-总结"><a href="#三-总结" class="headerlink" title="三 总结"></a>三 总结</h3><p><strong>buffer是即将要被写入磁盘的，而cache是被从磁盘中读出来的</strong></p>
+<ul>
+<li>buffer是由各种进程分配的，被用在如输入队列等方面。一个简单的例子如某个进程要求有多个字段读入，在所有字段被读入完整之前，进程把先前读入的字段放在buffer中保存</li>
+<li>cache经常被用在磁盘的I/O请求上，如果有多个进程都要访问某个文件，于是该文件便被做成cache以方便下次被访问，这样可提高系统性能</li>
+</ul>
 
       
     </div>
@@ -387,7 +399,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2021/12/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5/" title="策略模式" target="_blank" rel="external">http://example.com/2021/12/19/设计模式-策略/</a>
+      <a href="http://example.com/2022/04/25/FAQ-free%E5%91%BD%E4%BB%A4%E4%B8%ADbuffer%E5%92%8Ccache%E7%9A%84%E5%8C%BA%E5%88%AB/" title="free命令中的buffer和cache的区别" target="_blank" rel="external">http://example.com/2022/04/25/FAQ-free命令中buffer和cache的区别/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -410,13 +422,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2021/12/30/FAQ-maven%E4%BE%9D%E8%B5%96%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" title="maven依赖冲突如何解决"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2021/12/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B/" title="单例"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2022/04/21/JVM-JVM%E8%B0%83%E4%BC%9802/" title="JVM调优(二)"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
