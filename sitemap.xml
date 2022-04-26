@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://example.com/2022/04/23/JVM-JVM%E8%B0%83%E4%BC%9803/</loc>
+    
+    <lastmod>2022-04-25</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/2022/04/25/FAQ-free%E5%91%BD%E4%BB%A4%E4%B8%ADbuffer%E5%92%8Ccache%E7%9A%84%E5%8C%BA%E5%88%AB/</loc>
     
     <lastmod>2022-04-25</lastmod>
@@ -612,20 +621,6 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/SpringBoot/</loc>
-    <lastmod>2022-04-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.com/tags/Algorithm/</loc>
-    <lastmod>2022-04-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://example.com/tags/JVM/</loc>
     <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
@@ -633,7 +628,21 @@
   </url>
   
   <url>
+    <loc>http://example.com/tags/SpringBoot/</loc>
+    <lastmod>2022-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/tags/XXL-JOB/</loc>
+    <lastmod>2022-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/tags/Algorithm/</loc>
     <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -663,6 +672,13 @@
   </url>
   
   <url>
+    <loc>http://example.com/categories/JVM/</loc>
+    <lastmod>2022-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/categories/SpringBoot/</loc>
     <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
@@ -671,13 +687,6 @@
   
   <url>
     <loc>http://example.com/categories/Algorithm/</loc>
-    <lastmod>2022-04-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.com/categories/JVM/</loc>
     <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
