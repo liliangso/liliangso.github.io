@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-07-01T07:44:14.454Z</updated>
+  <updated>2022-07-18T03:52:35.416Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>mysql重置root密码</title>
+    <link href="http://example.com/2022/07/18/FAQ-Mysql%E9%87%8D%E7%BD%AEroot%E5%AF%86%E7%A0%81/"/>
+    <id>http://example.com/2022/07/18/FAQ-Mysql%E9%87%8D%E7%BD%AEroot%E5%AF%86%E7%A0%81/</id>
+    <published>2022-07-18T03:32:07.797Z</published>
+    <updated>2022-07-18T03:52:35.416Z</updated>
+    
+    <content type="html"><![CDATA[<p>要重置mysql的root密码需要以下几个步骤</p><ul><li><p><strong>1、以root账户登录mysql服务器</strong></p></li><li><p><strong>2、找到mysql的my.cnf配置文件</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 这个配置文件一般在/etc/my.cnf下可以通过下面的命令来查找my.cnf</span></span><br><span class="line">mysql --<span class="built_in">help</span>|grep <span class="string">&#x27;my.cnf&#x27;</span> 查看mysql默认读取的my.cnf，按照从前到后的优先级排序，前面的不存在，则读取后面的。通常配置在/etc/my.cnf。</span><br></pre></td></tr></table></figure></li><li><p><strong>3、修改my.cnf</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 对my.cnf文件做如下修改 </span></span><br><span class="line">首先找到[mysqld]这个配置项 在这个配置项下面添加</span><br><span class="line">skip-grant-tables</span><br></pre></td></tr></table></figure></li><li><p><strong>4、重启mysql服务</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 重启mysql服务有如下几个命令 每个命令都可以</span></span><br><span class="line">service mysqld restart</span><br><span class="line">mysqld restart</span><br></pre></td></tr></table></figure></li><li><p><strong>5、重置root密码</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 1、先用root用户登录</span></span><br><span class="line">mysql -uroot -p (直接点击回车，密码为空)</span><br><span class="line"><span class="comment">## 2、重置root密码</span></span><br><span class="line">use mysql;</span><br><span class="line"><span class="comment">## mysql 5.7以后用这个命令</span></span><br><span class="line">update user <span class="built_in">set</span> authentication_string=password(<span class="string">&#x27;123456&#x27;</span>) <span class="built_in">where</span> user=<span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"><span class="comment">## 刷新权限</span></span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure></li><li><p><strong>6、将最开始修改的配置文件my.cnf中的skip-grant-tables删除</strong></p></li><li><p><strong>7、重启mysql</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 建议重启mysql </span></span><br></pre></td></tr></table></figure></li><li><p><strong>8、当你登陆mysql之后你会发现，当你执行命令时会出现</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1820 (HY000): You must reset your password using ALTER USER statement；</span><br></pre></td></tr></table></figure><p>这是提示你需要修改密码 执行下面的代码 进行重置密码</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD = PASSWORD(<span class="string">&#x27;123456&#x27;</span>);</span><br></pre></td></tr></table></figure></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;要重置mysql的root密码需要以下几个步骤&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;1、以root账户登录mysql服务器&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;2、找到mysql的my.cnf配置文件&lt;/strong&gt;&lt;/p&gt;
+&lt;</summary>
+      
+    
+    
+    
+    <category term="FAQ" scheme="http://example.com/categories/FAQ/"/>
+    
+    
+    <category term="FAQ" scheme="http://example.com/tags/FAQ/"/>
+    
+  </entry>
   
   <entry>
     <title>Redis Long类型反序列化成Integer类型引发的类型转换异常的处理</title>
@@ -479,32 +508,6 @@
     
     
     <category term="高并发" scheme="http://example.com/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>状态模式</title>
-    <link href="http://example.com/2022/04/10/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://example.com/2022/04/10/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</id>
-    <published>2022-04-10T12:57:38.455Z</published>
-    <updated>2022-04-10T13:22:50.290Z</updated>
-    
-    <content type="html"><![CDATA[<p>状态模式(State Pattern) 也叫状态机模式 允许对象在内部状态发生改变时改变它的行为 状态模式中 行为是由它的状态来决定的，在不同的状态下会有不同的行为 状态模式和责任链模式很像<br>状态模式的角色分为</p><ul><li><strong>环境类角色(Context)</strong> 定义客户需要的接口 内部维护一个当前状态的实例</li><li><strong>抽象状态角色(IState)</strong> 定义该状态下的行为 可以有一个或多个行为</li><li><strong>具体状态角色(ConcreteState)</strong> 具体实现该状态对应的行为</li></ul><p><strong>示例</strong></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">State</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//行为1</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">doSomething_01</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//行为2</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">doSomething_02</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StateA</span> <span class="keyword">implements</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething_01</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;A状态下执行doSomething_01&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething_02</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;A状态下执行doSomething_02&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StateB</span> <span class="keyword">implements</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething_01</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;B状态下执行doSomething_01&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething_02</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;B状态下执行doSomething_02&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> State state;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//行为1</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething_01</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.doSomething_01();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//行为2</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething_02</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.doSomething_02();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context c = <span class="keyword">new</span> Context(<span class="keyword">new</span> StateA());</span><br><span class="line">        <span class="comment">//Context c = new Context(new StateA());</span></span><br><span class="line">        c.doSomething_01();</span><br><span class="line">        c.doSomething_02();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;状态模式(State Pattern) 也叫状态机模式 允许对象在内部状态发生改变时改变它的行为 状态模式中 行为是由它的状态来决定的，在不同的状态下会有不同的行为 状态模式和责任链模式很像&lt;br&gt;状态模式的角色分为&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;环境类角色(C</summary>
-      
-    
-    
-    
-    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-    <category term="设计模式" scheme="http://example.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
