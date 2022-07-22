@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Spring项目请求入参中List类型属性的元素过多时出现IndexOutOfBoundsException异常 | liliang的个人博客</title>
+  <meta name="description" content="问题  Spring工程采用form-data或x-www-form-urlencoded的方式提交数据 当提交的参数中数组或者List数量过大时抛出IndexOutOfBoundsException 异常信息如下 123org.springframework.beans.InvalidPropertyException: Invalid property &amp;#x27;divisionList[2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring项目请求入参中List类型属性的元素过多时出现IndexOutOfBoundsException异常">
+<meta property="og:url" content="http://example.com/2022/07/22/FAQ-Spring%E9%A1%B9%E7%9B%AE%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E4%B8%ADList%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%87%E5%A4%9A%E5%AF%BC%E8%87%B4IndexOutOfBoundsException%E5%BC%82%E5%B8%B8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="问题  Spring工程采用form-data或x-www-form-urlencoded的方式提交数据 当提交的参数中数组或者List数量过大时抛出IndexOutOfBoundsException 异常信息如下 123org.springframework.beans.InvalidPropertyException: Invalid property &amp;#x27;divisionList[2">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-22T06:41:24.467Z">
+<meta property="article:modified_time" content="2022-07-22T09:38:35.483Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FAQ">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2022/07/22/FAQ-Spring%E9%A1%B9%E7%9B%AE%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E4%B8%ADList%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%87%E5%A4%9A%E5%AF%BC%E8%87%B4IndexOutOfBoundsException%E5%BC%82%E5%B8%B8/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-springboot">
+          <a href="/categories/SpringBoot">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">SpringBoot</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-thread">
+          <a href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">高并发</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-algorithm">
+          <a href="/categories/Algorithm">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">数据结构与算法</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-jvm">
+          <a href="/categories/JVM">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">JVM</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a><span class="category-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXL-JOB/" rel="tag">XXL-JOB</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">四月 2022</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/22/FAQ-Spring%E9%A1%B9%E7%9B%AE%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E4%B8%ADList%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%87%E5%A4%9A%E5%AF%BC%E8%87%B4IndexOutOfBoundsException%E5%BC%82%E5%B8%B8/" class="title">Spring项目请求入参中List类型属性的元素过多时出现IndexOutOfBoundsException异常</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-22T06:41:24.467Z" itemprop="datePublished">2022-07-22</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/19/FAQ-nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E5%9F%9F%E5%90%8D/" class="title">nginx获取不到域名</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-19T07:04:35.036Z" itemprop="datePublished">2022-07-19</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/18/FAQ-Mysql%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%A4%A7%E5%B0%8F/" class="title">mysql查看数据库以及表大小</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-18T06:08:28.784Z" itemprop="datePublished">2022-07-18</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/18/FAQ-Mysql%E9%87%8D%E7%BD%AEroot%E5%AF%86%E7%A0%81/" class="title">mysql重置root密码</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-18T03:32:07.797Z" itemprop="datePublished">2022-07-18</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/01/FAQ-Redis%E5%AD%98Long%E7%B1%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%BC%82%E5%B8%B8/" class="title">Redis Long类型反序列化成Integer类型引发的类型转换异常的处理</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-01T07:06:18.868Z" itemprop="datePublished">2022-07-01</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-FAQ-Spring项目请求参数中List的元素过多导致IndexOutOfBoundsException异常" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spring项目请求入参中List类型属性的元素过多时出现IndexOutOfBoundsException异常
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/07/22/FAQ-Spring%E9%A1%B9%E7%9B%AE%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E4%B8%ADList%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%87%E5%A4%9A%E5%AF%BC%E8%87%B4IndexOutOfBoundsException%E5%BC%82%E5%B8%B8/" class="article-date">
+	  <time datetime="2022-07-22T06:41:24.467Z" itemprop="datePublished">2022-07-22</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/07/22/FAQ-Spring%E9%A1%B9%E7%9B%AE%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E4%B8%ADList%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%87%E5%A4%9A%E5%AF%BC%E8%87%B4IndexOutOfBoundsException%E5%BC%82%E5%B8%B8/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.8k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 9(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p><strong>问题</strong> </p>
+<p>Spring工程采用form-data或x-www-form-urlencoded的方式提交数据 当提交的参数中数组或者List数量过大时抛出IndexOutOfBoundsException 异常信息如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.beans.InvalidPropertyException: Invalid property <span class="string">&#x27;divisionList[256]&#x27;</span> of bean class [com.gome.bean.Presell]: Index of out of bounds <span class="keyword">in</span> property path <span class="string">&#x27;divisionList[256]&#x27;</span>; nested exception is java.lang.IndexOutOfBoundsException: Index: 256, Size: 256</span><br><span class="line">    org.springframework.beans.BeanWrapperImpl.getPropertyValue(BeanWrapperImpl.java:811)</span><br><span class="line">    org.springframework.beans.BeanWrapperImpl.getNestedBeanWrapper(BeanWrapperImpl.java:554)</span><br></pre></td></tr></table></figure>
+
+<p><strong>解决方案</strong></p>
+<p>在对应的Controller层重写这个方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 由于Spring在接受前台传入的List时，就会出现256的IndexOutOfBoundsException异常</span></span><br><span class="line"><span class="comment">  * 设置setAutoGrowCollectionLimit为1024</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> binder</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@see</span> [类、类#方法、类#成员]</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="meta">@InitBinder</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initListBinder</span><span class="params">(WebDataBinder binder)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// 设置需要包裹的元素个数，默认为256</span></span><br><span class="line">  binder.setAutoGrowCollectionLimit(<span class="number">3000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实如果Content-Type类型不是formdata而是json则不会出现类似的问题</p>
+<p><strong>原因</strong></p>
+<p>首先根据异常栈查看BeanWrapperImpl的getPropertyValue方法 这个方法在其父类AbstractNestablePropertyAccessor中 其源码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">getPropertyValue</span><span class="params">(AbstractNestablePropertyAccessor.PropertyTokenHolder tokens)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">  String propertyName = tokens.canonicalName;</span><br><span class="line">  String actualName = tokens.actualName;</span><br><span class="line">  AbstractNestablePropertyAccessor.PropertyHandler ph = <span class="keyword">this</span>.getLocalPropertyHandler(actualName);</span><br><span class="line">  <span class="keyword">if</span> (ph != <span class="keyword">null</span> &amp;&amp; ph.isReadable()) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      Object value = ph.getValue();</span><br><span class="line">      <span class="keyword">if</span> (tokens.keys != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">if</span> (!<span class="keyword">this</span>.isAutoGrowNestedPaths()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullValueInNestedPathException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName, <span class="string">&quot;Cannot access indexed value of property referenced in indexed property path &#x27;&quot;</span> + propertyName + <span class="string">&quot;&#x27;: returned null&quot;</span>);</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          value = <span class="keyword">this</span>.setDefaultValue(<span class="keyword">new</span> AbstractNestablePropertyAccessor.PropertyTokenHolder(tokens.actualName));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        StringBuilder indexedPropertyName = <span class="keyword">new</span> StringBuilder(tokens.actualName);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tokens.keys.length; ++i) &#123;</span><br><span class="line">          String key = tokens.keys[i];</span><br><span class="line">          <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullValueInNestedPathException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName, <span class="string">&quot;Cannot access indexed value of property referenced in indexed property path &#x27;&quot;</span> + propertyName + <span class="string">&quot;&#x27;: returned null&quot;</span>);</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">int</span> index;</span><br><span class="line">          <span class="keyword">if</span> (value.getClass().isArray()) &#123;</span><br><span class="line">            index = Integer.parseInt(key);</span><br><span class="line">            value = <span class="keyword">this</span>.growArrayIfNecessary(value, index, indexedPropertyName.toString());</span><br><span class="line">            value = Array.get(value, index);</span><br><span class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (value <span class="keyword">instanceof</span> List) &#123;</span><br><span class="line">            index = Integer.parseInt(key);</span><br><span class="line">            List&lt;Object&gt; list = (List)value;</span><br><span class="line">            <span class="comment">//这个方法是给list添加元素 并且负责list扩容的</span></span><br><span class="line">            <span class="keyword">this</span>.growCollectionIfNecessary(list, index, indexedPropertyName.toString(), ph, i + <span class="number">1</span>);</span><br><span class="line">            value = list.get(index);</span><br><span class="line">          &#125; <span class="keyword">else</span> <span class="keyword">if</span> (value <span class="keyword">instanceof</span> Set) &#123;</span><br><span class="line">            Set&lt;Object&gt; set = (Set)value;</span><br><span class="line">            <span class="keyword">int</span> index = Integer.parseInt(key);</span><br><span class="line">            <span class="keyword">if</span> (index &lt; <span class="number">0</span> || index &gt;= set.size()) &#123;</span><br><span class="line">              <span class="keyword">throw</span> <span class="keyword">new</span> InvalidPropertyException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName, <span class="string">&quot;Cannot get element with index &quot;</span> + index + <span class="string">&quot; from Set of size &quot;</span> + set.size() + <span class="string">&quot;, accessed using property path &#x27;&quot;</span> + propertyName + <span class="string">&quot;&#x27;&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Iterator&lt;Object&gt; it = set.iterator();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; it.hasNext(); ++j) &#123;</span><br><span class="line">              Object elem = it.next();</span><br><span class="line">              <span class="keyword">if</span> (j == index) &#123;</span><br><span class="line">                value = elem;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!(value <span class="keyword">instanceof</span> Map)) &#123;</span><br><span class="line">              <span class="keyword">throw</span> <span class="keyword">new</span> InvalidPropertyException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName, <span class="string">&quot;Property referenced in indexed property path &#x27;&quot;</span> + propertyName + <span class="string">&quot;&#x27; is neither an array nor a List nor a Set nor a Map; returned value was [&quot;</span> + value + <span class="string">&quot;]&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Map&lt;Object, Object&gt; map = (Map)value;</span><br><span class="line">            Class&lt;?&gt; mapKeyType = ph.getResolvableType().getNested(i + <span class="number">1</span>).asMap().resolveGeneric(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">0</span>&#125;);</span><br><span class="line">            TypeDescriptor typeDescriptor = TypeDescriptor.valueOf(mapKeyType);</span><br><span class="line">            Object convertedMapKey = <span class="keyword">this</span>.convertIfNecessary((String)<span class="keyword">null</span>, (Object)<span class="keyword">null</span>, key, mapKeyType, typeDescriptor);</span><br><span class="line">            value = map.get(convertedMapKey);</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          indexedPropertyName.append(<span class="string">&quot;[&quot;</span>).append(key).append(<span class="string">&quot;]&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> value;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IndexOutOfBoundsException var14) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> InvalidPropertyException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName, <span class="string">&quot;Index of out of bounds in property path &#x27;&quot;</span> + propertyName + <span class="string">&quot;&#x27;&quot;</span>, var14);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (TypeMismatchException | NumberFormatException var15) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> InvalidPropertyException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName, <span class="string">&quot;Invalid index in property path &#x27;&quot;</span> + propertyName + <span class="string">&quot;&#x27;&quot;</span>, var15);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InvocationTargetException var16) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> InvalidPropertyException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName, <span class="string">&quot;Getter for property &#x27;&quot;</span> + actualName + <span class="string">&quot;&#x27; threw exception&quot;</span>, var16);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception var17) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> InvalidPropertyException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName, <span class="string">&quot;Illegal attempt to get property &#x27;&quot;</span> + actualName + <span class="string">&quot;&#x27; threw exception&quot;</span>, var17);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> NotReadablePropertyException(<span class="keyword">this</span>.getRootClass(), <span class="keyword">this</span>.nestedPath + propertyName);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要关注上面源码中的 this.growCollectionIfNecessary(list, index, indexedPropertyName.toString(), ph, i + 1); 这个方法控制扩容的 之所以会报IndexOutOfBoundsException就是因为当list的元素个数超过256以后 list不会扩容导致的 下面是growCollectionIfNecessary的源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">growCollectionIfNecessary</span><span class="params">(Collection&lt;Object&gt; collection, <span class="keyword">int</span> index, String name, AbstractNestablePropertyAccessor.PropertyHandler ph, <span class="keyword">int</span> nestingLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.isAutoGrowNestedPaths()) &#123;</span><br><span class="line">            <span class="keyword">int</span> size = collection.size();</span><br><span class="line">            <span class="comment">//关注这个autoGrowCollectionLimit这个属性就是限制传参的list个数大小的</span></span><br><span class="line">            <span class="keyword">if</span> (index &gt;= size &amp;&amp; index &lt; <span class="keyword">this</span>.autoGrowCollectionLimit) &#123;</span><br><span class="line">                Class&lt;?&gt; elementType = ph.getResolvableType().getNested(nestingLevel).asCollection().resolveGeneric(<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">0</span>]);</span><br><span class="line">                <span class="keyword">if</span> (elementType != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">int</span> i = collection.size(); i &lt; index + <span class="number">1</span>; ++i) &#123;</span><br><span class="line">                        collection.add(<span class="keyword">this</span>.newValue(elementType, (TypeDescriptor)<span class="keyword">null</span>, name));</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于autoGrowCollectionLimit是AbstractNestablePropertyAccessor类的成员属性 这个属性在springMVC解析请求变量的时候进行赋值在通过DispatcherServlet一些列操作后 会在ModelAttributeMethodProcessor类的resolveArgument方法开始进行处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">resolveArgument</span><span class="params">(MethodParameter parameter, <span class="meta">@Nullable</span> ModelAndViewContainer mavContainer, NativeWebRequest webRequest, <span class="meta">@Nullable</span> WebDataBinderFactory binderFactory)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">      Assert.state(mavContainer != <span class="keyword">null</span>, <span class="string">&quot;ModelAttributeMethodProcessor requires ModelAndViewContainer&quot;</span>);</span><br><span class="line">      Assert.state(binderFactory != <span class="keyword">null</span>, <span class="string">&quot;ModelAttributeMethodProcessor requires WebDataBinderFactory&quot;</span>);</span><br><span class="line">      String name = ModelFactory.getNameForParameter(parameter);</span><br><span class="line">      ModelAttribute ann = (ModelAttribute)parameter.getParameterAnnotation(ModelAttribute.class);</span><br><span class="line">      <span class="keyword">if</span> (ann != <span class="keyword">null</span>) &#123;</span><br><span class="line">          mavContainer.setBinding(name, ann.binding());</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      Object attribute = <span class="keyword">null</span>;</span><br><span class="line">      BindingResult bindingResult = <span class="keyword">null</span>;</span><br><span class="line">      <span class="keyword">if</span> (mavContainer.containsAttribute(name)) &#123;</span><br><span class="line">          attribute = mavContainer.getModel().get(name);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">              attribute = <span class="keyword">this</span>.createAttribute(name, parameter, binderFactory, webRequest);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (BindException var10) &#123;</span><br><span class="line">              <span class="keyword">if</span> (<span class="keyword">this</span>.isBindExceptionRequired(parameter)) &#123;</span><br><span class="line">                  <span class="keyword">throw</span> var10;</span><br><span class="line">              &#125;</span><br><span class="line"></span><br><span class="line">              <span class="keyword">if</span> (parameter.getParameterType() == Optional.class) &#123;</span><br><span class="line">                  attribute = Optional.empty();</span><br><span class="line">              &#125;</span><br><span class="line"></span><br><span class="line">              bindingResult = var10.getBindingResult();</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (bindingResult == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="comment">//关注这个方法 会去创建WebDataBinder</span></span><br><span class="line">          WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);</span><br><span class="line">          <span class="keyword">if</span> (binder.getTarget() != <span class="keyword">null</span>) &#123;</span><br><span class="line">              <span class="keyword">if</span> (!mavContainer.isBindingDisabled(name)) &#123;</span><br><span class="line">                  <span class="keyword">this</span>.bindRequestParameters(binder, webRequest);</span><br><span class="line">              &#125;</span><br><span class="line"></span><br><span class="line">              <span class="keyword">this</span>.validateIfApplicable(binder, parameter);</span><br><span class="line">              <span class="keyword">if</span> (binder.getBindingResult().hasErrors() &amp;&amp; <span class="keyword">this</span>.isBindExceptionRequired(binder, parameter)) &#123;</span><br><span class="line">                  <span class="keyword">throw</span> <span class="keyword">new</span> BindException(binder.getBindingResult());</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (!parameter.getParameterType().isInstance(attribute)) &#123;</span><br><span class="line">              attribute = binder.convertIfNecessary(binder.getTarget(), parameter.getParameterType(), parameter);</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          bindingResult = binder.getBindingResult();</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      Map&lt;String, Object&gt; bindingResultModel = bindingResult.getModel();</span><br><span class="line">      mavContainer.removeAttributes(bindingResultModel);</span><br><span class="line">      mavContainer.addAllAttributes(bindingResultModel);</span><br><span class="line">      <span class="keyword">return</span> attribute;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是DefaultDataBinderFactory类createBinder方法的源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第一步</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> WebDataBinder <span class="title">createBinder</span><span class="params">(NativeWebRequest webRequest, <span class="meta">@Nullable</span> Object target, String objectName)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//先看createBinderInstance方法 这里会进入DataBinder类 构造DataBinder </span></span><br><span class="line">        WebDataBinder dataBinder = <span class="keyword">this</span>.createBinderInstance(target, objectName, webRequest);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.initializer != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.initializer.initBinder(dataBinder, webRequest);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//然后查看initBinder方法</span></span><br><span class="line">        <span class="keyword">this</span>.initBinder(dataBinder, webRequest);</span><br><span class="line">        <span class="keyword">return</span> dataBinder;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//第二步</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> WebDataBinder <span class="title">createBinderInstance</span><span class="params">(<span class="meta">@Nullable</span> Object target, String objectName, NativeWebRequest webRequest)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//关注这个构造方法</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WebRequestDataBinder(target, objectName);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是WebRequestDataBinder类的父类DataBinder的构造方法 可以看到这个类也有一个autoGrowCollectionLimit且属性值为256</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DataBinder</span><span class="params">(<span class="meta">@Nullable</span> Object target, String objectName)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.ignoreUnknownFields = <span class="keyword">true</span>;</span><br><span class="line">       <span class="keyword">this</span>.ignoreInvalidFields = <span class="keyword">false</span>;</span><br><span class="line">       <span class="keyword">this</span>.autoGrowNestedPaths = <span class="keyword">true</span>;</span><br><span class="line">       <span class="comment">//可以看到autoGrowCollectionLimit属性值是</span></span><br><span class="line">       <span class="keyword">this</span>.autoGrowCollectionLimit = <span class="number">256</span>;</span><br><span class="line">       <span class="keyword">this</span>.bindingErrorProcessor = <span class="keyword">new</span> DefaultBindingErrorProcessor();</span><br><span class="line">       <span class="keyword">this</span>.validators = <span class="keyword">new</span> ArrayList();</span><br><span class="line">       <span class="keyword">this</span>.target = ObjectUtils.unwrapOptional(target);</span><br><span class="line">       <span class="keyword">this</span>.objectName = objectName;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>再回到DefaultDataBinderFactory类的createBinder中 关注initBinder方法 initBinder方法的实现在InitBinderDataBinderFactory类中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initBinder</span><span class="params">(WebDataBinder dataBinder, NativeWebRequest request)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Iterator var3 = <span class="keyword">this</span>.binderMethods.iterator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(var3.hasNext()) &#123;</span><br><span class="line">        InvocableHandlerMethod binderMethod = (InvocableHandlerMethod)var3.next();</span><br><span class="line">        <span class="comment">//关注isBinderMethodApplicable方法 这个方法会读取InitBinder注解 如果方法包含了这个注解会进行下一步的处理</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.isBinderMethodApplicable(binderMethod, dataBinder)) &#123;</span><br><span class="line">            <span class="comment">//再看这个方法 </span></span><br><span class="line">            Object returnValue = binderMethod.invokeForRequest(request, (ModelAndViewContainer)<span class="keyword">null</span>, <span class="keyword">new</span> Object[]&#123;dataBinder&#125;);</span><br><span class="line">            <span class="keyword">if</span> (returnValue != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;@InitBinder methods must not return a value (should be void): &quot;</span> + binderMethod);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>initBinder之后 DataBinder已经创建完成 再回到ModelAttributeMethodProcessor类的resolveArgument方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">resolveArgument</span><span class="params">(MethodParameter parameter, <span class="meta">@Nullable</span> ModelAndViewContainer mavContainer, NativeWebRequest webRequest, <span class="meta">@Nullable</span> WebDataBinderFactory binderFactory)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Assert.state(mavContainer != <span class="keyword">null</span>, <span class="string">&quot;ModelAttributeMethodProcessor requires ModelAndViewContainer&quot;</span>);</span><br><span class="line">        Assert.state(binderFactory != <span class="keyword">null</span>, <span class="string">&quot;ModelAttributeMethodProcessor requires WebDataBinderFactory&quot;</span>);</span><br><span class="line">        String name = ModelFactory.getNameForParameter(parameter);</span><br><span class="line">        ModelAttribute ann = (ModelAttribute)parameter.getParameterAnnotation(ModelAttribute.class);</span><br><span class="line">        <span class="keyword">if</span> (ann != <span class="keyword">null</span>) &#123;</span><br><span class="line">            mavContainer.setBinding(name, ann.binding());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object attribute = <span class="keyword">null</span>;</span><br><span class="line">        BindingResult bindingResult = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (mavContainer.containsAttribute(name)) &#123;</span><br><span class="line">            attribute = mavContainer.getModel().get(name);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                attribute = <span class="keyword">this</span>.createAttribute(name, parameter, binderFactory, webRequest);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (BindException var10) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.isBindExceptionRequired(parameter)) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> var10;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (parameter.getParameterType() == Optional.class) &#123;</span><br><span class="line">                    attribute = Optional.empty();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                bindingResult = var10.getBindingResult();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (bindingResult == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//createBinder 流程已经完成了</span></span><br><span class="line">            WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);</span><br><span class="line">            <span class="keyword">if</span> (binder.getTarget() != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!mavContainer.isBindingDisabled(name)) &#123;</span><br><span class="line">                    <span class="comment">//再看这个方法 这个方法最后会走到AbstractNestablePropertyAccessor类的构造方法也就是BeanWapperImpl的父类方法 </span></span><br><span class="line">                    <span class="keyword">this</span>.bindRequestParameters(binder, webRequest);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">this</span>.validateIfApplicable(binder, parameter);</span><br><span class="line">                <span class="keyword">if</span> (binder.getBindingResult().hasErrors() &amp;&amp; <span class="keyword">this</span>.isBindExceptionRequired(binder, parameter)) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> BindException(binder.getBindingResult());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!parameter.getParameterType().isInstance(attribute)) &#123;</span><br><span class="line">                attribute = binder.convertIfNecessary(binder.getTarget(), parameter.getParameterType(), parameter);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            bindingResult = binder.getBindingResult();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Map&lt;String, Object&gt; bindingResultModel = bindingResult.getModel();</span><br><span class="line">        mavContainer.removeAttributes(bindingResultModel);</span><br><span class="line">        mavContainer.addAllAttributes(bindingResultModel);</span><br><span class="line">        <span class="keyword">return</span> attribute;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来看AbstractNestablePropertyAccessor类的构造方法 此时会走到下面这个构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">AbstractNestablePropertyAccessor</span><span class="params">(Object object, String nestedPath, AbstractNestablePropertyAccessor parent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.autoGrowCollectionLimit = <span class="number">2147483647</span>;</span><br><span class="line">        <span class="keyword">this</span>.nestedPath = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">this</span>.setWrappedInstance(object, nestedPath, parent.getWrappedInstance());</span><br><span class="line">        <span class="keyword">this</span>.setExtractOldValueForEditor(parent.isExtractOldValueForEditor());</span><br><span class="line">        <span class="keyword">this</span>.setAutoGrowNestedPaths(parent.isAutoGrowNestedPaths());</span><br><span class="line">        <span class="comment">//可以看到这个parent.getAutoGrowCollectionLimit()就是我们在Controller类中通过@InitBinder注解设置的</span></span><br><span class="line">        <span class="comment">//aAutoGrowCollectionLimit</span></span><br><span class="line">        <span class="keyword">this</span>.setAutoGrowCollectionLimit(parent.getAutoGrowCollectionLimit());</span><br><span class="line">        <span class="keyword">this</span>.setConversionService(parent.getConversionService());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/07/22/FAQ-Spring%E9%A1%B9%E7%9B%AE%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E4%B8%ADList%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%87%E5%A4%9A%E5%AF%BC%E8%87%B4IndexOutOfBoundsException%E5%BC%82%E5%B8%B8/" title="Spring项目请求入参中List类型属性的元素过多时出现IndexOutOfBoundsException异常" target="_blank" rel="external">http://example.com/2022/07/22/FAQ-Spring项目请求参数中List的元素过多导致IndexOutOfBoundsException异常/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/07/19/FAQ-nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E8%8E%B7%E5%8F%96%E4%B8%8D%E5%88%B0%E5%9F%9F%E5%90%8D/" title="nginx获取不到域名"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
