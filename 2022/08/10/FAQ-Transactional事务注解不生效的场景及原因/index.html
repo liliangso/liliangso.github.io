@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>Transactional事务注解不生效的场景及原因 | liliang的个人博客</title>
+  <meta name="description" content="一 项目准备下面是 DB 数据和 DB 操作接口：    uid uname usex    1 张三 女   2 李四 男   3 王五 男   1234567&#x2F;&#x2F; 提供的接口public interface UserDao &amp;#123;    &#x2F;&#x2F; select * from user_test where uid &#x3D; &quot;#&amp;#123;uid&amp;#125;&quot;    publi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transactional事务注解不生效的场景及原因">
+<meta property="og:url" content="http://example.com/2022/08/10/FAQ-Transactional%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%8E%9F%E5%9B%A0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一 项目准备下面是 DB 数据和 DB 操作接口：    uid uname usex    1 张三 女   2 李四 男   3 王五 男   1234567&#x2F;&#x2F; 提供的接口public interface UserDao &amp;#123;    &#x2F;&#x2F; select * from user_test where uid &#x3D; &quot;#&amp;#123;uid&amp;#125;&quot;    publi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/0128.png">
+<meta property="og:image" content="http://example.com/images/0129.png">
+<meta property="og:image" content="http://example.com/images/0130.png">
+<meta property="og:image" content="http://example.com/images/0131.png">
+<meta property="og:image" content="http://example.com/images/0132.png">
+<meta property="og:image" content="http://example.com/images/0133.png">
+<meta property="og:image" content="http://example.com/images/0134.png">
+<meta property="og:image" content="http://example.com/images/0135.png">
+<meta property="og:image" content="http://example.com/images/0136.png">
+<meta property="og:image" content="http://example.com/images/0137.png">
+<meta property="og:image" content="http://example.com/images/0138.png">
+<meta property="og:image" content="http://example.com/images/0139.png">
+<meta property="og:image" content="http://example.com/images/0140.png">
+<meta property="article:published_time" content="2022-08-10T01:33:45.562Z">
+<meta property="article:modified_time" content="2022-08-10T03:36:52.966Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FAQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/0128.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2022/08/10/FAQ-Transactional%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%8E%9F%E5%9B%A0/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-springboot">
+          <a href="/categories/SpringBoot">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">SpringBoot</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-thread">
+          <a href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">高并发</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-algorithm">
+          <a href="/categories/Algorithm">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">数据结构与算法</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-jvm">
+          <a href="/categories/JVM">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">JVM</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a><span class="category-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">29</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXL-JOB/" rel="tag">XXL-JOB</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">四月 2022</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/08/10/FAQ-Transactional%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%8E%9F%E5%9B%A0/" class="title">Transactional事务注解不生效的场景及原因</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-08-10T01:33:45.562Z" itemprop="datePublished">2022-08-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/08/04/FAQ-nacos%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E8%A6%86%E7%9B%96%E6%9C%AC%E5%9C%B0%E9%85%8D%E7%BD%AE%E5%AF%BC%E8%87%B4%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E4%B8%8D%E7%94%9F%E6%95%88/" class="title">nacos配置中心覆盖本地配置导致命令行参数不生效</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-08-04T02:57:38.186Z" itemprop="datePublished">2022-08-04</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/29/FAQ-http%E5%93%8D%E5%BA%94%E7%8A%B6%E6%80%81%E7%A0%81400%E5%B8%B8%E8%A7%81%E5%8E%9F%E5%9B%A0/" class="title">http响应状态码报400可能的原因</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-29T07:01:07.807Z" itemprop="datePublished">2022-07-29</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/25/FAQ-nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" class="title">nginx负载均衡</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-25T08:19:01.684Z" itemprop="datePublished">2022-07-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/22/FAQ-Spring%E9%A1%B9%E7%9B%AE%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0%E4%B8%ADList%E7%9A%84%E5%85%83%E7%B4%A0%E8%BF%87%E5%A4%9A%E5%AF%BC%E8%87%B4IndexOutOfBoundsException%E5%BC%82%E5%B8%B8/" class="title">Spring项目请求入参中List类型属性的元素过多时出现IndexOutOfBoundsException异常</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-22T06:41:24.467Z" itemprop="datePublished">2022-07-22</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-%E9%A1%B9%E7%9B%AE%E5%87%86%E5%A4%87"><span class="toc-number">1.</span> <span class="toc-text">一 项目准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-%E4%BA%8B%E5%8A%A1%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%87%A0%E7%A7%8D-Case"><span class="toc-number">2.</span> <span class="toc-text">二 事务不生效的几种 Case</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E7%B1%BB%E5%86%85%E9%83%A8%E8%AE%BF%E9%97%AE"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 类内部访问</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E7%A7%81%E6%9C%89%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 私有方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E5%BC%82%E5%B8%B8%E4%B8%8D%E5%8C%B9%E9%85%8D"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 异常不匹配</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 多线程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">三 源码解析</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-FAQ-Transactional事务注解不生效的场景及原因" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Transactional事务注解不生效的场景及原因
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/08/10/FAQ-Transactional%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%8E%9F%E5%9B%A0/" class="article-date">
+	  <time datetime="2022-08-10T01:33:45.562Z" itemprop="datePublished">2022-08-10</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/08/10/FAQ-Transactional%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%8E%9F%E5%9B%A0/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.7k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 7(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="一-项目准备"><a href="#一-项目准备" class="headerlink" title="一 项目准备"></a>一 项目准备</h3><p>下面是 DB 数据和 DB 操作接口：</p>
+<table>
+<thead>
+<tr>
+<th>uid</th>
+<th>uname</th>
+<th>usex</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>张三</td>
+<td>女</td>
+</tr>
+<tr>
+<td>2</td>
+<td>李四</td>
+<td>男</td>
+</tr>
+<tr>
+<td>3</td>
+<td>王五</td>
+<td>男</td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 提供的接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserDao</span> </span>&#123;</span><br><span class="line">    <span class="comment">// select * from user_test where uid = &quot;#&#123;uid&#125;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyUser <span class="title">selectUserById</span><span class="params">(Integer uid)</span></span>;</span><br><span class="line">    <span class="comment">// update user_test set uname =#&#123;uname&#125;,usex = #&#123;usex&#125; where uid = #&#123;uid&#125;</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">updateUser</span><span class="params">(MyUser user)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>基础测试代码，testSuccess() 是事务生效的情况</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDao userDao;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">        MyUser user = <span class="keyword">new</span> MyUser();</span><br><span class="line">        user.setUid(id);</span><br><span class="line">        user.setUname(<span class="string">&quot;张三-testing&quot;</span>);</span><br><span class="line">        user.setUsex(<span class="string">&quot;女&quot;</span>);</span><br><span class="line">        userDao.updateUser(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyUser <span class="title">query</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">        MyUser user = userDao.selectUserById(id);</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正常情况</span></span><br><span class="line">    <span class="meta">@Transactional(rollbackFor = Exception.class)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSuccess</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        Integer id = <span class="number">1</span>;</span><br><span class="line">        MyUser user = query(id);</span><br><span class="line">        System.out.println(<span class="string">&quot;原记录:&quot;</span> + user);</span><br><span class="line">        update(id);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;事务生效&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二-事务不生效的几种-Case"><a href="#二-事务不生效的几种-Case" class="headerlink" title="二 事务不生效的几种 Case"></a>二 事务不生效的几种 Case</h3><p>主要有4种 </p>
+<ul>
+<li><strong>类内部访问</strong> A 类的 a1 方法没有标注 @Transactional，a2 方法标注 @Transactional，在 a1 里面调用 a2</li>
+<li><strong>私有方法</strong> 将 @Transactional 注解标注在非 public 方法上</li>
+<li><strong>异常不匹配</strong> @Transactional 未设置 rollbackFor 属性，方法返回 Exception 等异常</li>
+<li><strong>多线程</strong> 主线程和子线程的调用，线程抛出异常</li>
+</ul>
+<h4 id="2-1-类内部访问"><a href="#2-1-类内部访问" class="headerlink" title="2.1 类内部访问"></a>2.1 类内部访问</h4><p>我们在类 UserController 中新增一个方法 testInteralCall()</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testInteralCall</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    testSuccess();</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;事务不生效：类内部访问&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里 testInteralCall() 没有标注 @Transactional，我们再看一下测试用例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">    UserController uc = (UserController) applicationContext.getBean(<span class="string">&quot;userController&quot;</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        uc.testSuccess();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        MyUser user =  uc.query(<span class="number">1</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;修改后的记录:&quot;</span> + user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出：</span></span><br><span class="line"><span class="comment">// 原记录:MyUser(uid=1, uname=张三, usex=女)</span></span><br><span class="line"><span class="comment">// 修改后的记录:MyUser(uid=1, uname=张三-testing, usex=女)</span></span><br></pre></td></tr></table></figure>
+
+<p>从上面的输出可以看到，事务并没有回滚，这个是什么原因呢？</p>
+<p>因为 @Transactional 的工作机制是基于 AOP 实现，AOP 是使用动态代理实现的，如果通过代理直接调用 testSuccess()，通过 AOP 会前后进行增强，增强的逻辑其实就是在 testSuccess() 的前后分别加上开启、提交事务的逻辑，后面的源码会进行剖析。</p>
+<p>现在是通过 testInteralCall() 去调用 testSuccess()，testSuccess() 前后不会进行任何增强操作，也就是<strong>类内部调用，不会通过代理方式访问。</strong></p>
+<p>如果还是不太清楚，推荐再看看这篇文章，里面有完整示例，非常完美诠释“类内部访问”不能前后增强的原因：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Ahuuua/article/details/123877835">https://blog.csdn.net/Ahuuua/article/details/123877835</a></p>
+<h4 id="2-2-私有方法"><a href="#2-2-私有方法" class="headerlink" title="2.2 私有方法"></a>2.2 私有方法</h4><p>在私有方法上，添加 @Transactional 注解也不会生效</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional(rollbackFor = Exception.class)</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">testPirvateMethod</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Integer id = <span class="number">1</span>;</span><br><span class="line">    MyUser user = query(id);</span><br><span class="line">    System.out.println(<span class="string">&quot;原记录:&quot;</span> + user);</span><br><span class="line">    update(id);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;测试事务生效&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直接使用时，下面这种场景不太容易出现，因为 IDEA 会有提醒，文案为: Methods annotated with ‘@Transactional’ must be overridable，<strong>至于深层次的原理，见源码剖析</strong></p>
+<h4 id="2-3-异常不匹配"><a href="#2-3-异常不匹配" class="headerlink" title="2.3 异常不匹配"></a>2.3 异常不匹配</h4><p>这里的 @Transactional 没有设置 rollbackFor = Exception.class 属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testExceptionNotMatch</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Integer id = <span class="number">1</span>;</span><br><span class="line">    MyUser user = query(id);</span><br><span class="line">    System.out.println(<span class="string">&quot;原记录:&quot;</span> + user);</span><br><span class="line">    update(id);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;事务不生效：异常不匹配&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出：</span></span><br><span class="line"><span class="comment">// 原记录:User[uid=1,uname=张三,usex=女]</span></span><br><span class="line"><span class="comment">// 修改后的记录:User[uid=1,uname=张三-test,usex=女]</span></span><br></pre></td></tr></table></figure>
+
+<p>@Transactional 注解默认处理运行时异常，即只有抛出运行时异常时，才会触发事务回滚，否则并不会回滚，<strong>至于深层次的原理，见源码剖析</strong></p>
+<h4 id="2-4-多线程"><a href="#2-4-多线程" class="headerlink" title="2.4 多线程"></a>2.4 多线程</h4><p>下面给出两个不同的姿势，一个是子线程抛异常，主线程 ok；一个是子线程 ok，主线程抛异常</p>
+<ul>
+<li><p><strong>父线程抛出异常</strong></p>
+<p>父线程抛出异常，子线程不抛出异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSuccess</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Integer id = <span class="number">1</span>;</span><br><span class="line">    MyUser user = query(id);</span><br><span class="line">    System.out.println(<span class="string">&quot;原记录:&quot;</span> + user);</span><br><span class="line">    update(id);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Transactional(rollbackFor = Exception.class)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMultThread</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@SneakyThrows</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            testSuccess();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).start();</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;测试事务不生效&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>父线程抛出线程，事务回滚，因为子线程是独立存在，和父线程不在同一个事务中，所以子线程的修改并不会被回滚</p>
+</li>
+<li><p><strong>子线程抛出异常</strong></p>
+<p>父线程不抛出异常，子线程抛出异常</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSuccess</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Integer id = <span class="number">1</span>;</span><br><span class="line">    MyUser user = query(id);</span><br><span class="line">    System.out.println(<span class="string">&quot;原记录:&quot;</span> + user);</span><br><span class="line">    update(id);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">&quot;测试事务不生效&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Transactional(rollbackFor = Exception.class)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMultThread</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        <span class="meta">@SneakyThrows</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            testSuccess();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于子线程的异常不会被外部的线程捕获，所以父线程不抛异常，事务回滚没有生效</p>
+</li>
+</ul>
+<h3 id="三-源码解析"><a href="#三-源码解析" class="headerlink" title="三 源码解析"></a>三 源码解析</h3><p>下面我们从源码的角度，对 @Transactional 的执行机制和事务不生效的原因进行解读</p>
+<p><strong>@Transactional 执行机制</strong></p>
+<p>我们只看最核心的逻辑，代码中的 interceptorOrInterceptionAdvice 就是 TransactionInterceptor 的实例，入参是 this 对象红色方框有一段注释，大致翻译为 “它是一个拦截器，所以我们只需调用即可：在构造此对象之前，将静态地计算切入点”</p>
+<p><img src="/images/0128.png" alt="图片"></p>
+<p>this 是 ReflectiveMethodInvocation 对象，成员对象包含 UserController 类、testSuccess() 方法、入参和代理对象等</p>
+<p><img src="/images/0129.png" alt="图片"></p>
+<p>进入 invoke() 方法后</p>
+<p><img src="/images/0130.png" alt="图片"></p>
+<p><strong>前方高能！！！这里就是事务的核心逻辑，包括判断事务是否开启、目标方法执行、事务回滚、事务提交</strong></p>
+<p><img src="/images/0131.png" alt="图片"></p>
+<ul>
+<li><p><strong>private 导致事务不生效原因</strong></p>
+<p>在上面这幅图中，第一个红框区域调用了方法 getTransactionAttribute()，主要是为了获取 txAttr 变量，它是用于读取 @Transactional 的配置，如果这个 txAttr = null，后面就不会走事务逻辑，我们看一下这个变量的含义</p>
+<p><img src="/images/0132.png" alt="图片"></p>
+<p>我们直接进入 getTransactionAttribute()，重点关注获取事务配置的方法</p>
+<p><img src="/images/0133.png" alt="图片"></p>
+<p><strong>前方高能！！！这里就是 private 导致事务不生效的原因所在</strong>，allowPublicMethodsOnly() 一直返回 false，所以重点只关注 isPublic() 方法。</p>
+<p><img src="/images/0134.png" alt="图片"></p>
+<p>下面通过位与计算，判断是否为 Public，对应的几类修饰符如下</p>
+<ul>
+<li>PUBLIC: 1</li>
+<li>PRIVATE: 2</li>
+<li>PROTECTED: 4</li>
+</ul>
+<p><img src="/images/0135.png" alt="图片"></p>
+<ul>
+<li><p><strong>异常不匹配原因</strong></p>
+<p>我们继续回到事务的核心逻辑，因为主方法抛出 Exception() 异常，进入事务回滚的逻辑<img src="/images/0136.png" alt="图片"></p>
+<p>进入 rollbackOn() 方法，判断该异常是否能进行回滚，这个需要判断主方法抛出的 Exception() 异常，是否在 @Transactional 的配置中</p>
+<p><img src="/images/0137.png" alt="图片"></p>
+<p>我们进入 getDepth() 看一下异常规则匹配逻辑，因为我们对 @Transactional 配置了 rollbackFor = Exception.class，所以能匹配成功</p>
+<p><img src="/images/0138.png" alt="图片"></p>
+<p>示例中的 winner 不为 null，所以会跳过下面的环节。但是当 winner = null 时，也就是没有设置 rollbackFor 属性时，会走默认的异常捕获方式</p>
+<p><img src="/images/0139.png" alt="图片"></p>
+<p><strong>前方高能！！！这里就是异常不匹配原因的原因所在</strong>，我们看一下默认的异常捕获方式</p>
+<p><img src="/images/0140.png" alt="图片"></p>
+<p>从这里我们可以看出spring事务默认只会对RuntimeException 或 Error 进行回滚</p>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/08/10/FAQ-Transactional%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%8E%9F%E5%9B%A0/" title="Transactional事务注解不生效的场景及原因" target="_blank" rel="external">http://example.com/2022/08/10/FAQ-Transactional事务注解不生效的场景及原因/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/08/04/FAQ-nacos%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E8%A6%86%E7%9B%96%E6%9C%AC%E5%9C%B0%E9%85%8D%E7%BD%AE%E5%AF%BC%E8%87%B4%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E4%B8%8D%E7%94%9F%E6%95%88/" title="nacos配置中心覆盖本地配置导致命令行参数不生效"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
