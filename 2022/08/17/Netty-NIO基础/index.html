@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>NIO基础 | liliang的个人博客</title>
+  <meta name="description" content="NIO 三大组件NIO 又叫非阻塞式IO(non-bloking io) 或者也叫New IO 它有三大组件 Channel、Buffer、Selector  Channel  channel有点类似于stream 它代表的是读写数据的双向通道 可以从channel将数据读入buffer，也可以将buffer中的数据写入channel。而之前的stream 要么是输入，要么是输出。channel比">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NIO基础">
+<meta property="og:url" content="http://example.com/2022/08/17/Netty-NIO%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="NIO 三大组件NIO 又叫非阻塞式IO(non-bloking io) 或者也叫New IO 它有三大组件 Channel、Buffer、Selector  Channel  channel有点类似于stream 它代表的是读写数据的双向通道 可以从channel将数据读入buffer，也可以将buffer中的数据写入channel。而之前的stream 要么是输入，要么是输出。channel比">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/0141.png">
+<meta property="og:image" content="http://example.com/images/0142.png">
+<meta property="og:image" content="http://example.com/images/0143.png">
+<meta property="og:image" content="http://example.com/images/0144.png">
+<meta property="article:published_time" content="2022-08-17T15:24:20.615Z">
+<meta property="article:modified_time" content="2022-09-04T02:22:01.752Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Netty">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/0141.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://example.com/2022/08/17/Netty-NIO%E5%9F%BA%E7%A1%80/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.4.1"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liliang" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">SO</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国长沙</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-designparttern">
+          <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">设计模式</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-springboot">
+          <a href="/categories/SpringBoot">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">SpringBoot</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-thread">
+          <a href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">高并发</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-algorithm">
+          <a href="/categories/Algorithm">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">数据结构与算法</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-netty">
+          <a href="/categories/Netty">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">Netty</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-jvm">
+          <a href="/categories/JVM">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">JVM</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-faq">
+          <a href="/categories/FAQ">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">FAQ</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">29</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a><span class="category-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">29</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/" rel="tag">Netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXL-JOB/" rel="tag">XXL-JOB</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">四月 2022</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Netty/">Netty</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/08/17/Netty-NIO%E5%9F%BA%E7%A1%80/" class="title">NIO基础</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-08-17T15:24:20.615Z" itemprop="datePublished">2022-08-17</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/08/10/FAQ-Transactional%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%8E%9F%E5%9B%A0/" class="title">Transactional事务注解不生效的场景及原因</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-08-10T01:33:45.562Z" itemprop="datePublished">2022-08-10</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/08/04/FAQ-nacos%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E8%A6%86%E7%9B%96%E6%9C%AC%E5%9C%B0%E9%85%8D%E7%BD%AE%E5%AF%BC%E8%87%B4%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E4%B8%8D%E7%94%9F%E6%95%88/" class="title">nacos配置中心覆盖本地配置导致命令行参数不生效</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-08-04T02:57:38.186Z" itemprop="datePublished">2022-08-04</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/29/FAQ-http%E5%93%8D%E5%BA%94%E7%8A%B6%E6%80%81%E7%A0%81400%E5%B8%B8%E8%A7%81%E5%8E%9F%E5%9B%A0/" class="title">http响应状态码报400可能的原因</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-29T07:01:07.807Z" itemprop="datePublished">2022-07-29</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
+              </p>
+              <p class="item-title">
+                <a href="/2022/07/25/FAQ-nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" class="title">nginx负载均衡</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2022-07-25T08:19:01.684Z" itemprop="datePublished">2022-07-25</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#NIO-%E4%B8%89%E5%A4%A7%E7%BB%84%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">NIO 三大组件</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Netty-NIO基础" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      NIO基础
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/08/17/Netty-NIO%E5%9F%BA%E7%A1%80/" class="article-date">
+	  <time datetime="2022-08-17T15:24:20.615Z" itemprop="datePublished">2022-08-17</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Netty/">Netty</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/Netty/" rel="tag">Netty</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/08/17/Netty-NIO%E5%9F%BA%E7%A1%80/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 4.2k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 20(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="NIO-三大组件"><a href="#NIO-三大组件" class="headerlink" title="NIO 三大组件"></a>NIO 三大组件</h3><p>NIO 又叫非阻塞式IO(non-bloking io) 或者也叫New IO 它有三大组件 <strong>Channel</strong>、<strong>Buffer</strong>、<strong>Selector</strong></p>
+<ul>
+<li><p><strong>Channel</strong> </p>
+<p>channel有点类似于stream 它代表的是读写数据的双向通道 可以从channel将数据读入buffer，也可以将buffer中的数据写入channel。而之前的stream 要么是输入，要么是输出。channel比stream更为底层</p>
+<p>常见的channel有</p>
+<ul>
+<li>FileChannel</li>
+<li>DatagramChannel(UDP传输时用)</li>
+<li>SocketChannel</li>
+<li>ServerSocketChannel</li>
+</ul>
+</li>
+<li><p><strong>Buffer</strong></p>
+<p>buffer是用来缓冲读写数据的 常见的buffer有</p>
+<ul>
+<li>ByteBuffer</li>
+<li>ShortBuffer</li>
+<li>IntBuffer</li>
+<li>LongBuffer</li>
+<li>FloatBuffer</li>
+<li>DoubleBuffer</li>
+</ul>
+</li>
+<li><p><strong>Selector</strong></p>
+<p>selector 也称选择器 它的作用就是配合一个线程来管理多个channel,获取这些channel上发生的事件 这些channel工作在非阻塞模式下 不会让线程被阻塞在一个channel中 适合服务器的连接数多但是流量低的场景</p>
+<p><img src="/images/0141.png" alt="图一"></p>
+</li>
+</ul>
+<p><strong>Channel与ByteBuffer基本使用案例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestByteBuffer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">//获取FileChannel</span></span><br><span class="line">        <span class="comment">//1、可以通过输入/出流来间接的获取Channel</span></span><br><span class="line">        <span class="comment">//2、也可以通过RandomAccessFile来获取Channel</span></span><br><span class="line">        <span class="comment">//对于IDEA来说 maven项目 FileInputStream根路径是在maven的project(项目)的根路径 不是module的根路径 所以下面我接了一个module的名称netty-demo</span></span><br><span class="line">        FileInputStream fis = <span class="keyword">new</span> FileInputStream(<span class="string">&quot;netty-demo/data.txt&quot;</span>);</span><br><span class="line">        FileChannel fileChannel = fis.getChannel();</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            <span class="comment">//准备缓冲区 ByteBuffer ByteBuffer不能实例化 需要通过静态方法获取</span></span><br><span class="line">            <span class="comment">//分配一个5字节的缓冲区</span></span><br><span class="line">            ByteBuffer byteBuffer = ByteBuffer.allocate(<span class="number">5</span>);</span><br><span class="line">            <span class="comment">//从Channel读取数据(方向要搞对 这实际上是至从channel去读 然后向缓冲区写 channel ---&gt; byteBuffer)</span></span><br><span class="line">            <span class="keyword">int</span> len = fileChannel.read(byteBuffer);</span><br><span class="line">            <span class="keyword">while</span> (len != -<span class="number">1</span>) &#123;</span><br><span class="line">                <span class="comment">//打印读取的内容(byteBuffer中的内容)</span></span><br><span class="line">                <span class="comment">//给byteBuffer切换模式 先调flip方法表示接下来要从byteBuffer中读取数据了</span></span><br><span class="line">                byteBuffer.flip();</span><br><span class="line">                <span class="comment">//byteBuffer中是否还有数据没有读完</span></span><br><span class="line">                <span class="keyword">while</span> (byteBuffer.hasRemaining()) &#123;</span><br><span class="line">                    <span class="comment">//一个字节一个字节的从byteBuffer中读取数据</span></span><br><span class="line">                    <span class="keyword">byte</span> b = byteBuffer.get();</span><br><span class="line">                    System.out.println((<span class="keyword">char</span>)b);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//将byteBuffer切换为写模式</span></span><br><span class="line">                byteBuffer.clear();</span><br><span class="line">                <span class="comment">//重新从byteBuffer中读取数据</span></span><br><span class="line">                len = fileChannel.read(byteBuffer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (fileChannel != <span class="keyword">null</span>) &#123;</span><br><span class="line">                fileChannel.close();</span><br><span class="line">            &#125;</span><br><span class="line">            fis.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>data.txt内容</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">123abcdef456</span><br></pre></td></tr></table></figure>
+
+<p><strong>ByteBuffer结构</strong></p>
+<p>ByteBuffer有以下重要属性</p>
+<ul>
+<li>capacity</li>
+<li>position</li>
+<li>limit</li>
+</ul>
+<p><img src="/images/0142.png" alt="图二"></p>
+<p><img src="/images/0143.png" alt="图三"></p>
+<p><img src="/images/0144.png" alt="图四"></p>
+<p><strong>ByteBuffer使用示例与常见方法</strong></p>
+<ul>
+<li><p><strong>使用示例</strong></p>
+<p>下面这个工具类可以更好的帮助我们来理解ByteBuffer在写入和读取的时候的bytebuffer中position与limit的变化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.liliang.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.util.internal.MathUtil;</span><br><span class="line"><span class="keyword">import</span> io.netty.util.internal.StringUtil;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.nio.ByteBuffer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ByteBufferUtil</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">char</span>[] BYTE2CHAR = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">256</span>];</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">char</span>[] HEXDUMP_TABLE = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">256</span> * <span class="number">4</span>];</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] HEXPADDING = <span class="keyword">new</span> String[<span class="number">16</span>];</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] HEXDUMP_ROWPREFIXES = <span class="keyword">new</span> String[<span class="number">65536</span> &gt;&gt;&gt; <span class="number">4</span>];</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] BYTE2HEX = <span class="keyword">new</span> String[<span class="number">256</span>];</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] BYTEPADDING = <span class="keyword">new</span> String[<span class="number">16</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">char</span>[] DIGITS = <span class="string">&quot;0123456789abcdef&quot;</span>.toCharArray();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">256</span>; i++) &#123;</span><br><span class="line">            HEXDUMP_TABLE[i &lt;&lt; <span class="number">1</span>] = DIGITS[i &gt;&gt;&gt; <span class="number">4</span> &amp; <span class="number">0x0F</span>];</span><br><span class="line">            HEXDUMP_TABLE[(i &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>] = DIGITS[i &amp; <span class="number">0x0F</span>];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Generate the lookup table for hex dump paddings</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; HEXPADDING.length; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> padding = HEXPADDING.length - i;</span><br><span class="line">            StringBuilder buf = <span class="keyword">new</span> StringBuilder(padding * <span class="number">3</span>);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; padding; j++) &#123;</span><br><span class="line">                buf.append(<span class="string">&quot;   &quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            HEXPADDING[i] = buf.toString();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Generate the lookup table for the start-offset header in each row (up to 64KiB).</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; HEXDUMP_ROWPREFIXES.length; i++) &#123;</span><br><span class="line">            StringBuilder buf = <span class="keyword">new</span> StringBuilder(<span class="number">12</span>);</span><br><span class="line">            buf.append(StringUtil.NEWLINE);</span><br><span class="line">            buf.append(Long.toHexString(i &lt;&lt; <span class="number">4</span> &amp; <span class="number">0xFFFFFFFFL</span> | <span class="number">0x100000000L</span>));</span><br><span class="line">            buf.setCharAt(buf.length() - <span class="number">9</span>, <span class="string">&#x27;|&#x27;</span>);</span><br><span class="line">            buf.append(<span class="string">&#x27;|&#x27;</span>);</span><br><span class="line">            HEXDUMP_ROWPREFIXES[i] = buf.toString();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Generate the lookup table for byte-to-hex-dump conversion</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; BYTE2HEX.length; i++) &#123;</span><br><span class="line">            BYTE2HEX[i] = <span class="string">&#x27; &#x27;</span> + StringUtil.byteToHexStringPadded(i);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Generate the lookup table for byte dump paddings</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; BYTEPADDING.length; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> padding = BYTEPADDING.length - i;</span><br><span class="line">            StringBuilder buf = <span class="keyword">new</span> StringBuilder(padding);</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; padding; j++) &#123;</span><br><span class="line">                buf.append(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            BYTEPADDING[i] = buf.toString();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Generate the lookup table for byte-to-char conversion</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; BYTE2CHAR.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i &lt;= <span class="number">0x1f</span> || i &gt;= <span class="number">0x7f</span>) &#123;</span><br><span class="line">                BYTE2CHAR[i] = <span class="string">&#x27;.&#x27;</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                BYTE2CHAR[i] = (<span class="keyword">char</span>) i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 打印所有内容</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> buffer</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">debugAll</span><span class="params">(ByteBuffer buffer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> oldlimit = buffer.limit();</span><br><span class="line">        buffer.limit(buffer.capacity());</span><br><span class="line">        StringBuilder origin = <span class="keyword">new</span> StringBuilder(<span class="number">256</span>);</span><br><span class="line">        appendPrettyHexDump(origin, buffer, <span class="number">0</span>, buffer.capacity());</span><br><span class="line">        System.out.println(<span class="string">&quot;+--------+-------------------- all ------------------------+----------------+&quot;</span>);</span><br><span class="line">        System.out.printf(<span class="string">&quot;position: [%d], limit: [%d]\n&quot;</span>, buffer.position(), oldlimit);</span><br><span class="line">        System.out.println(origin);</span><br><span class="line">        buffer.limit(oldlimit);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 打印可读取内容</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> buffer</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">debugRead</span><span class="params">(ByteBuffer buffer)</span> </span>&#123;</span><br><span class="line">        StringBuilder builder = <span class="keyword">new</span> StringBuilder(<span class="number">256</span>);</span><br><span class="line">        appendPrettyHexDump(builder, buffer, buffer.position(), buffer.limit() - buffer.position());</span><br><span class="line">        System.out.println(<span class="string">&quot;+--------+-------------------- read -----------------------+----------------+&quot;</span>);</span><br><span class="line">        System.out.printf(<span class="string">&quot;position: [%d], limit: [%d]\n&quot;</span>, buffer.position(), buffer.limit());</span><br><span class="line">        System.out.println(builder);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">appendPrettyHexDump</span><span class="params">(StringBuilder dump, ByteBuffer buf, <span class="keyword">int</span> offset, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (MathUtil.isOutOfBounds(offset, length, buf.capacity())) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(</span><br><span class="line">                    <span class="string">&quot;expected: &quot;</span> + <span class="string">&quot;0 &lt;= offset(&quot;</span> + offset + <span class="string">&quot;) &lt;= offset + length(&quot;</span> + length</span><br><span class="line">                            + <span class="string">&quot;) &lt;= &quot;</span> + <span class="string">&quot;buf.capacity(&quot;</span> + buf.capacity() + <span class="string">&#x27;)&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (length == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        dump.append(</span><br><span class="line">                <span class="string">&quot;         +-------------------------------------------------+&quot;</span> +</span><br><span class="line">                        StringUtil.NEWLINE + <span class="string">&quot;         |  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f |&quot;</span> +</span><br><span class="line">                        StringUtil.NEWLINE + <span class="string">&quot;+--------+-------------------------------------------------+----------------+&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> startIndex = offset;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> fullRows = length &gt;&gt;&gt; <span class="number">4</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> remainder = length &amp; <span class="number">0xF</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Dump the rows which have 16 bytes.</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> row = <span class="number">0</span>; row &lt; fullRows; row++) &#123;</span><br><span class="line">            <span class="keyword">int</span> rowStartIndex = (row &lt;&lt; <span class="number">4</span>) + startIndex;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Per-row prefix.</span></span><br><span class="line">            appendHexDumpRowPrefix(dump, row, rowStartIndex);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Hex dump</span></span><br><span class="line">            <span class="keyword">int</span> rowEndIndex = rowStartIndex + <span class="number">16</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = rowStartIndex; j &lt; rowEndIndex; j++) &#123;</span><br><span class="line">                dump.append(BYTE2HEX[getUnsignedByte(buf, j)]);</span><br><span class="line">            &#125;</span><br><span class="line">            dump.append(<span class="string">&quot; |&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// ASCII dump</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = rowStartIndex; j &lt; rowEndIndex; j++) &#123;</span><br><span class="line">                dump.append(BYTE2CHAR[getUnsignedByte(buf, j)]);</span><br><span class="line">            &#125;</span><br><span class="line">            dump.append(<span class="string">&#x27;|&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Dump the last row which has less than 16 bytes.</span></span><br><span class="line">        <span class="keyword">if</span> (remainder != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> rowStartIndex = (fullRows &lt;&lt; <span class="number">4</span>) + startIndex;</span><br><span class="line">            appendHexDumpRowPrefix(dump, fullRows, rowStartIndex);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Hex dump</span></span><br><span class="line">            <span class="keyword">int</span> rowEndIndex = rowStartIndex + remainder;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = rowStartIndex; j &lt; rowEndIndex; j++) &#123;</span><br><span class="line">                dump.append(BYTE2HEX[getUnsignedByte(buf, j)]);</span><br><span class="line">            &#125;</span><br><span class="line">            dump.append(HEXPADDING[remainder]);</span><br><span class="line">            dump.append(<span class="string">&quot; |&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Ascii dump</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = rowStartIndex; j &lt; rowEndIndex; j++) &#123;</span><br><span class="line">                dump.append(BYTE2CHAR[getUnsignedByte(buf, j)]);</span><br><span class="line">            &#125;</span><br><span class="line">            dump.append(BYTEPADDING[remainder]);</span><br><span class="line">            dump.append(<span class="string">&#x27;|&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        dump.append(StringUtil.NEWLINE +</span><br><span class="line">                <span class="string">&quot;+--------+-------------------------------------------------+----------------+&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">appendHexDumpRowPrefix</span><span class="params">(StringBuilder dump, <span class="keyword">int</span> row, <span class="keyword">int</span> rowStartIndex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (row &lt; HEXDUMP_ROWPREFIXES.length) &#123;</span><br><span class="line">            dump.append(HEXDUMP_ROWPREFIXES[row]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            dump.append(StringUtil.NEWLINE);</span><br><span class="line">            dump.append(Long.toHexString(rowStartIndex &amp; <span class="number">0xFFFFFFFFL</span> | <span class="number">0x100000000L</span>));</span><br><span class="line">            dump.setCharAt(dump.length() - <span class="number">9</span>, <span class="string">&#x27;|&#x27;</span>);</span><br><span class="line">            dump.append(<span class="string">&#x27;|&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">short</span> <span class="title">getUnsignedByte</span><span class="params">(ByteBuffer buffer, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">short</span>) (buffer.get(index) &amp; <span class="number">0xFF</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是ByteBuffer测试案例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestByteBuffer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">       ByteBuffer buffer = ByteBuffer.allocate(<span class="number">10</span>);</span><br><span class="line">       buffer.put((<span class="keyword">byte</span>) <span class="number">0x61</span>); <span class="comment">//16进制61 就是10进制的97 也是字符a</span></span><br><span class="line">       ByteBufferUtil.debugAll(buffer); <span class="comment">//观察byteBuffer的limit、position</span></span><br><span class="line">       buffer.put(<span class="keyword">new</span> <span class="keyword">byte</span>[]&#123;<span class="number">0x62</span>, <span class="number">0x63</span>, <span class="number">0x64</span>&#125;); <span class="comment">//依次写入16进制的62、63、64 也就是b c d</span></span><br><span class="line">       ByteBufferUtil.debugAll(buffer); <span class="comment">//观察byteBuffer的limit、position</span></span><br><span class="line">       buffer.flip(); <span class="comment">//切换到读取模式</span></span><br><span class="line">       ByteBufferUtil.debugAll(buffer); <span class="comment">//观察byteBuffer的limit、position 此时position变成了0 limit变成了4</span></span><br><span class="line">       <span class="keyword">char</span> a = (<span class="keyword">char</span>) buffer.get();</span><br><span class="line">       ByteBufferUtil.debugAll(buffer); <span class="comment">//观察byteBuffer的limit、position</span></span><br><span class="line">       System.out.println(<span class="string">&quot;a = &quot;</span> + a);</span><br><span class="line">       buffer.compact(); <span class="comment">//调用compact进入写入模式 它会把byteBuffer中未读取的数据向前移</span></span><br><span class="line">       ByteBufferUtil.debugAll(buffer); <span class="comment">//观察byteBuffer的limit、position 以及bytebuffer中内容的变化</span></span><br><span class="line">       buffer.put((<span class="keyword">byte</span>) <span class="number">0x65</span>); <span class="comment">//写入e</span></span><br><span class="line">       ByteBufferUtil.debugAll(buffer); <span class="comment">//观察byteBuffer的limit、position 以及bytebuffer中内容的变化</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>byteBuffer分配内存的两种方式的比较</strong></p>
+<p>byteBuffer的get方法会让position读指针向后走 如果想重复读取数据 可以调用 rewind方法将position的读指针重置为0 也可以调用get(int i )方法获取索引内容 但是这个方法不会移动postion的读指针</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//byteBuffer有两种分配内存的方式 分别是分配堆内存 与 分配直接内存</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestByteBufferAllocate</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(ByteBuffer.allocate(<span class="number">16</span>).getClass()); <span class="comment">//HeapByteBuffer</span></span><br><span class="line">        System.out.println(ByteBuffer.allocateDirect(<span class="number">16</span>).getClass()); <span class="comment">//DirectByteBuffer</span></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * HeapByteBuffer 与 DirectByteBuffer的区别</span></span><br><span class="line"><span class="comment">         * HeapByteBuffer 是指的分配的是java的堆内存 读写效率较低 同时堆内存 会收到java垃圾回收机制的影响</span></span><br><span class="line"><span class="comment">         * DirectByteBuffer 是指的分配的是直接内存 读写效率较高(比堆内存 少一次数据拷贝) 直接内存不会被JAVA 垃圾回收器所管控</span></span><br><span class="line"><span class="comment">         * 同时 直接内存 容易造成内存泄漏(如果使用后不及时回收内存的话) 另外直接内存 在分配内存的时候 相对堆内存来说 效率更低</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>byteBuffer的读取与写入</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestByteBufferReadWrite</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        ByteBuffer buffer = ByteBuffer.allocate(<span class="number">10</span>);</span><br><span class="line">        <span class="comment">//测试buffer的写入</span></span><br><span class="line">        <span class="comment">//第一种写入方式调用put方法</span></span><br><span class="line">        buffer.put((<span class="keyword">byte</span>) <span class="number">97</span>);</span><br><span class="line">        <span class="comment">//第二种写入方式调用channel的read方法</span></span><br><span class="line">        FileChannel channel = <span class="keyword">new</span> FileInputStream(<span class="string">&quot;netty-demo/data.txt&quot;</span>).getChannel();</span><br><span class="line">        <span class="keyword">int</span> len = channel.read(buffer);</span><br><span class="line">        <span class="keyword">while</span> (len != -<span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">//测试buffer的读取</span></span><br><span class="line">            <span class="comment">//第一种调用buffer的get方法</span></span><br><span class="line">            <span class="comment">//byteBuffer切换至读取模式</span></span><br><span class="line">            buffer.flip();</span><br><span class="line">            <span class="keyword">while</span> (buffer.hasRemaining()) &#123;</span><br><span class="line">                <span class="keyword">char</span> b = (<span class="keyword">char</span>) buffer.get();</span><br><span class="line">                System.out.println(b);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//byteBuffer切换至于写入模式</span></span><br><span class="line">            buffer.clear();</span><br><span class="line">            len = channel.read(buffer);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//第二种调用channel的write方法</span></span><br><span class="line">        <span class="comment">//先切换到写模式</span></span><br><span class="line">        buffer.clear();</span><br><span class="line">        buffer.put((<span class="keyword">byte</span>) <span class="number">97</span>);</span><br><span class="line">        buffer.put((<span class="keyword">byte</span>) <span class="number">98</span>);</span><br><span class="line">        <span class="comment">//再切换至读取模式</span></span><br><span class="line">        buffer.flip();</span><br><span class="line">        FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(<span class="string">&quot;netty-demo/data2.txt&quot;</span>);</span><br><span class="line">        FileChannel channel2 = fos.getChannel();</span><br><span class="line">        channel2.write(buffer);</span><br><span class="line">        <span class="comment">//查看data2.txt</span></span><br><span class="line">        channel.close();</span><br><span class="line">        channel2.close();</span><br><span class="line">        fos.close();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>byteBuffer与字符串的互相转换</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestByteBufferString</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//1、字符串转ByteBuffer</span></span><br><span class="line">        String str = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">        ByteBuffer byteBuffer = ByteBuffer.allocate(<span class="number">15</span>);</span><br><span class="line">        byteBuffer.put(str.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        ByteBufferUtil.debugAll(byteBuffer);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2、利用charset将字符串写入byteBuffer中</span></span><br><span class="line">        ByteBuffer buffer_2 = StandardCharsets.UTF_8.encode(str);</span><br><span class="line">        ByteBufferUtil.debugAll(buffer_2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//3、利用warp将字符串写入byteBuffer中</span></span><br><span class="line">        ByteBuffer buffer_3 = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        ByteBufferUtil.debugAll(buffer_3);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//4、将byteBuffer中的字节数据转字符串</span></span><br><span class="line">        byteBuffer.flip();</span><br><span class="line">        <span class="keyword">int</span> len = byteBuffer.limit();</span><br><span class="line">        <span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line">        byteBuffer.get(b);</span><br><span class="line">        System.out.println(<span class="keyword">new</span> String(b, StandardCharsets.UTF_8));</span><br><span class="line"></span><br><span class="line">        <span class="comment">//5、利用charset将byteBuffer中的字节数据转字符串</span></span><br><span class="line">        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(buffer_2);</span><br><span class="line">        System.out.println(charBuffer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>byteBuffer分散读取案例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestScatteringRead</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 有这样的需求 如果已经一个文件的大小为9个字节 内容是onetwothree 现在希望一次读取一部分(按单词的长度来读取)</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">//通过RandomAccessFile这个类来随机访问一个文件来获取fileChannel 和 FileInputStream差不多</span></span><br><span class="line">        <span class="comment">//RandomAccessFile 第二个参数是mode 有  &quot;r&quot;, &quot;rw&quot;, &quot;rws&quot;, or &quot;rwd&quot; 这几个值 r表示只读 rw表示可读可写</span></span><br><span class="line">        FileChannel fileChannel = <span class="keyword">new</span> RandomAccessFile(<span class="string">&quot;netty-demo/data2.txt&quot;</span>, <span class="string">&quot;r&quot;</span>).getChannel();</span><br><span class="line">        ByteBuffer b1 = ByteBuffer.allocate(<span class="number">3</span>);</span><br><span class="line">        ByteBuffer b2 = ByteBuffer.allocate(<span class="number">3</span>);</span><br><span class="line">        ByteBuffer b3 = ByteBuffer.allocate(<span class="number">5</span>);</span><br><span class="line">        <span class="comment">//这个表示一次性将data2.txt中的内容分别读到b1、b2、b3三个byteBuffer中 每个buffer读入3个字节的内容</span></span><br><span class="line">        fileChannel.read(<span class="keyword">new</span> ByteBuffer[]&#123;b1, b2, b3&#125;);</span><br><span class="line"></span><br><span class="line">        b1.flip();</span><br><span class="line">        b2.flip();</span><br><span class="line">        b3.flip();</span><br><span class="line">        ByteBufferUtil.debugAll(b1); <span class="comment">//里面的内容是one</span></span><br><span class="line">        ByteBufferUtil.debugAll(b2); <span class="comment">//里面的内容是two</span></span><br><span class="line">        ByteBufferUtil.debugAll(b3); <span class="comment">//里面的内容是three</span></span><br><span class="line">        <span class="keyword">if</span>(fileChannel != <span class="keyword">null</span>) &#123;</span><br><span class="line">            fileChannel.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>byteBuffer集中写的案例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestGatheringWrite</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 测试将多个byteBuffer同时写入文件中</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        ByteBuffer b1 = StandardCharsets.UTF_8.encode(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">        ByteBuffer b2 = StandardCharsets.UTF_8.encode(<span class="string">&quot;world&quot;</span>);</span><br><span class="line">        ByteBuffer b3 = StandardCharsets.UTF_8.encode(<span class="string">&quot;你好&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 注意b4关于flip执行多次的测试</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        ByteBuffer b4 = ByteBuffer.allocate(<span class="number">10</span>);</span><br><span class="line">        b4.put((<span class="keyword">byte</span>) <span class="number">65</span>);</span><br><span class="line">        b4.put((<span class="keyword">byte</span>) <span class="number">66</span>);</span><br><span class="line">        b4.put((<span class="keyword">byte</span>) <span class="number">67</span>);</span><br><span class="line"></span><br><span class="line">        b4.flip();</span><br><span class="line">        ByteBufferUtil.debugAll(b4); <span class="comment">//注意观察b4的limit 此时limit是3 是没有问题的</span></span><br><span class="line">        b4.flip();</span><br><span class="line">        ByteBufferUtil.debugAll(b4);<span class="comment">//第二次执行limit后 因为在上一次filp 后没有写入内容 所以此时b4的limit的值变成了0</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//StandardCharsets构造的byteBuffer会自动为我们切换为读模式 不需要再手动的调用filp方法了</span></span><br><span class="line">        FileChannel fileChannel = <span class="keyword">new</span> RandomAccessFile(<span class="string">&quot;netty-demo/data3.txt&quot;</span>, <span class="string">&quot;rw&quot;</span>).getChannel();</span><br><span class="line"></span><br><span class="line">        fileChannel.write(<span class="keyword">new</span> ByteBuffer[]&#123;b1, b2, b3&#125;);</span><br><span class="line">        <span class="keyword">if</span>(fileChannel != <span class="keyword">null</span>) &#123;</span><br><span class="line">            fileChannel.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>byteBuffer综合运用示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestByteBufferExam</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * byteBuffer综合练习 需求如下</span></span><br><span class="line"><span class="comment">         * 网络上有多条数据发送给服务端 数据之间用\n进行分隔</span></span><br><span class="line"><span class="comment">         * 但是由于某种原因 在接收的时候 这些数据进行了重新组合 例如原始发送的3条数据为</span></span><br><span class="line"><span class="comment">         * Hello,world\n</span></span><br><span class="line"><span class="comment">         * I&#x27;m zhangsan\n</span></span><br><span class="line"><span class="comment">         * How are you?\n</span></span><br><span class="line"><span class="comment">         * 实际接收的时候 变成了两个byteBuffer 下面第一个buffer 其实就是网络中常见的黏包现象 两个传输的网络包黏在一起了 第二个buffer则是半包 一个完整的网络包被截断了</span></span><br><span class="line"><span class="comment">         * Hello,world\nI&#x27;m zhangsan\nHo</span></span><br><span class="line"><span class="comment">         * w are you?\n</span></span><br><span class="line"><span class="comment">         * 现在要你编写程序将程序恢复</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//第一步模拟网络编程中收到的两个byteBuffer</span></span><br><span class="line">        ByteBuffer source = ByteBuffer.allocate(<span class="number">32</span>);</span><br><span class="line">        source.put(<span class="string">&quot;Hello,world\nI&#x27;m zhangsan\nHo&quot;</span>.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        split(source);</span><br><span class="line">        source.put(<span class="string">&quot;w are you?\n&quot;</span>.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">        split(source);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">split</span><span class="params">(ByteBuffer source)</span> </span>&#123;</span><br><span class="line">        source.flip();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; source.limit(); i++) &#123;</span><br><span class="line">            <span class="keyword">byte</span> b = source.get(i);</span><br><span class="line">            <span class="keyword">if</span>(b == <span class="string">&#x27;\n&#x27;</span>) &#123;</span><br><span class="line">                <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[i - source.position()];</span><br><span class="line">                source.get(bytes, <span class="number">0</span>, i - source.position());</span><br><span class="line">                source.get(); <span class="comment">//把\n读出来</span></span><br><span class="line">                System.out.println(<span class="keyword">new</span> String(bytes, StandardCharsets.UTF_8));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//调整为写入模式</span></span><br><span class="line">        source.compact();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>FileChannel文件编程</strong></p>
+<p>FileChannel只能工作在阻塞模式下 它是不能配合Selector来使用的 此外也不能直接获取FileChannel 必须通过FileInputStream、FileOutputStream 或者RandomAccessFile来获取FileChannel 它们都有getChannel方法</p>
+<ul>
+<li>通过FileInputStream获取的channel只能读</li>
+<li>通过FileOutputStream获取的channel只能写</li>
+<li>通过RandomAccessFile是否能读/能写根据构造RandomAccessFile时的读写模式来决定的</li>
+</ul>
+<p>使用FileChannel后 channel必须关闭 不过调用了FileInputStream、FileOutputStream或者RandomAccessFile的close方法会间接的调用channel的close方法 注意在调用channel的write方法的时候 操作系统处于性能方面的考虑并不会直接将数据写入磁盘 而是先写入到缓存中 可以调用channel的force(true)方法将文件内容和元数据立即写入磁盘</p>
+<ul>
+<li><p><strong>FileChannel传输数据</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestFileChannelTransferTo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        FileChannel from = <span class="keyword">new</span> FileInputStream(<span class="string">&quot;netty-demo/data.txt&quot;</span>).getChannel();</span><br><span class="line">        FileChannel to = <span class="keyword">new</span> FileOutputStream(<span class="string">&quot;netty-demo/data5.txt&quot;</span>).getChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//FileChannel的transferTo方法 表示从from这个channel里传输数据到to这个channel里 传输数据的大小为from这个channel中包含的字节大小</span></span><br><span class="line">        <span class="comment">//其实也就是吧data.txt写到data5.txt中 方便而且效率比自己用FileInputStream和FileOutputStream要高 因为底层会使用操作系统的零拷贝进行优化</span></span><br><span class="line">        from.transferTo(<span class="number">0</span>, from.size(), to);</span><br><span class="line">        to.close();</span><br><span class="line">        <span class="keyword">if</span> (from != <span class="keyword">null</span>) &#123;</span><br><span class="line">            from.close();;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意transferTo方法传输文件是有上限的 一次最多传2个G 超过2个G 就不能这样用了</p>
+</li>
+<li><p><strong>FileChannel传输超过2G的文件</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestFileChannelTransferTo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        FileChannel from = <span class="keyword">new</span> FileInputStream(<span class="string">&quot;netty-demo/data.txt&quot;</span>).getChannel();</span><br><span class="line">        FileChannel to = <span class="keyword">new</span> FileOutputStream(<span class="string">&quot;netty-demo/data5.txt&quot;</span>).getChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//FileChannel的transferTo方法 表示从from这个channel里传输数据到to这个channel里 传输数据的大小为from这个channel中包含的字节大小</span></span><br><span class="line">        <span class="comment">//其实也就是吧data.txt写到data5.txt中</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//remainSize 表示channel中剩余的(还没有传输的数据大小)</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">long</span> remainSize = from.size(); remainSize &gt; <span class="number">0</span>;)&#123;</span><br><span class="line">            <span class="comment">//size 单次实际传输的数据大小</span></span><br><span class="line">            <span class="keyword">long</span> size = from.transferTo(from.size() - remainSize, remainSize, to);</span><br><span class="line">            <span class="comment">//剩余大小</span></span><br><span class="line">            remainSize -= size;</span><br><span class="line">            System.out.println(<span class="string">&quot;remainSize = &quot;</span> + remainSize);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        to.close();</span><br><span class="line">        <span class="keyword">if</span> (from != <span class="keyword">null</span>) &#123;</span><br><span class="line">            from.close();;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>Path</strong></p>
+<p>Jdk7引入了Path和Paths类</p>
+<p>Paths是工具类 用来获取Path实例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestPath</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Path source = Paths.get(<span class="string">&quot;1.txt&quot;</span>); <span class="comment">//相对路径 使用usr.dir 环境变量来定位 1.txt</span></span><br><span class="line">        Path source = Paths.get(<span class="string">&quot;d:\\1.txt&quot;</span>); <span class="comment">//绝对路径</span></span><br><span class="line">        Path source = Paths.get(<span class="string">&quot;d:/1.txt&quot;</span>); <span class="comment">//绝对路径</span></span><br><span class="line">        Path source = Paths.get(<span class="string">&quot;d:\\data&quot;</span>, <span class="string">&quot;projects&quot;</span>); <span class="comment">//绝对路径 代表d:\data\projects</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>WalkFileTree使用案例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestFilesWalkFileTree</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//walkFileTree 表示遍历文件夹 它有两个参数</span></span><br><span class="line">        <span class="comment">// start 表示 需要遍历的文件夹的路径</span></span><br><span class="line">        <span class="comment">// visitor 表示遍历到文件之后需要做的操作</span></span><br><span class="line">        Files.walkFileTree(Paths.get(<span class="string">&quot;/Users/xxx/code/test/netty-demo&quot;</span>), <span class="keyword">new</span> SimpleFileVisitor&lt;Path&gt;()&#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">preVisitDirectory</span><span class="params">(Path dir, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">                <span class="comment">//preVisitDirectory 进入文件夹前的操作</span></span><br><span class="line">                <span class="comment">//加入自己的逻辑 最后的返回值 super.preVisitDirectory(dir, attrs);不要去改动 否则会影响遍历的结果</span></span><br><span class="line">                System.out.println(<span class="string">&quot;进入文件夹:&quot;</span> + dir.toString());</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.preVisitDirectory(dir, attrs);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFile</span><span class="params">(Path file, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">                <span class="comment">//访问文件时的操作</span></span><br><span class="line">                <span class="comment">//加入自己的逻辑 最后的返回值 super.visitFile(file, attrs);不要去改动 否则会影响遍历的结果</span></span><br><span class="line">                System.out.println(<span class="string">&quot;file : &quot;</span> + file.getFileName());</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.visitFile(file, attrs);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFileFailed</span><span class="params">(Path file, IOException exc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">                <span class="comment">//访问文件失败的操作</span></span><br><span class="line">                System.out.println(<span class="string">&quot;访问文件失败:&quot;</span> + file.getFileName());</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.visitFileFailed(file, exc);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">postVisitDirectory</span><span class="params">(Path dir, IOException exc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">                <span class="comment">//从文件夹出来以后的操作</span></span><br><span class="line">                System.out.println(<span class="string">&quot;退出文件夹:&quot;</span> + dir.toString());</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.postVisitDirectory(dir, exc);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>利用WalkFileTree来删除多级目录</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestFilesWalkFileTree</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//walkFileTree 表示遍历文件夹 它有两个参数</span></span><br><span class="line">        <span class="comment">// start 表示 需要遍历的文件夹的路径</span></span><br><span class="line">        <span class="comment">// visitor 表示遍历到文件之后需要做的操作</span></span><br><span class="line">        Files.walkFileTree(Paths.get(<span class="string">&quot;/Users/xx/code/test/netty-demo/target&quot;</span>), <span class="keyword">new</span> SimpleFileVisitor&lt;Path&gt;()&#123;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">visitFile</span><span class="params">(Path file, BasicFileAttributes attrs)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">                <span class="comment">//访问文件时的操作</span></span><br><span class="line">                <span class="comment">//加入自己的逻辑 最后的返回值 super.visitFile(file, attrs);不要去改动 否则会影响遍历的结果</span></span><br><span class="line">                File f = file.toFile();</span><br><span class="line">                <span class="keyword">boolean</span> result = f.delete();</span><br><span class="line">                System.out.println(<span class="string">&quot;删除文件&quot;</span> + f.getAbsolutePath() + <span class="string">&quot; 结果:&quot;</span> + result);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.visitFile(file, attrs);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> FileVisitResult <span class="title">postVisitDirectory</span><span class="params">(Path dir, IOException exc)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">                <span class="comment">//从文件夹出来以后的操作</span></span><br><span class="line">                File f = dir.toFile();</span><br><span class="line">                <span class="keyword">boolean</span> result = f.delete();</span><br><span class="line">                System.out.println(<span class="string">&quot;删除目录&quot;</span> + f.getAbsolutePath() + <span class="string">&quot; 结果:&quot;</span> + result);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">super</span>.postVisitDirectory(dir, exc);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>利用FileWalkTree拷贝多级目录</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestFileWalkTreeCopy</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        String source = <span class="string">&quot;/Users/xx/code/test/netty-demo/target&quot;</span>;</span><br><span class="line">        String target = <span class="string">&quot;/Users/xx/code/test/netty-demo/target2&quot;</span>;</span><br><span class="line">        <span class="comment">//遍历源文件夹</span></span><br><span class="line">        Files.walk(Paths.get(source)).forEach((path) -&gt; &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                String toPath = path.toString().replace(source, target);</span><br><span class="line">                <span class="keyword">if</span>(Files.isDirectory(path)) &#123;</span><br><span class="line">                    Files.createDirectory(Paths.get(toPath));</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (Files.isRegularFile(path)) &#123;</span><br><span class="line">                    Files.copy(path, Paths.get(toPath));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/08/17/Netty-NIO%E5%9F%BA%E7%A1%80/" title="NIO基础" target="_blank" rel="external">http://example.com/2022/08/17/Netty-NIO基础/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/08/10/FAQ-Transactional%E4%BA%8B%E5%8A%A1%E6%B3%A8%E8%A7%A3%E4%B8%8D%E7%94%9F%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF%E5%8F%8A%E5%8E%9F%E5%9B%A0/" title="Transactional事务注解不生效的场景及原因"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
+  
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
