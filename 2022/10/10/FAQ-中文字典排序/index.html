@@ -17,16 +17,20 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>归档: 2021 | liliang的个人博客</title>
-  <meta property="og:type" content="website">
+  <title>liliang的个人博客</title>
+  <meta name="description" content="title: java中文字典排序comments: false #关闭文章评论categories:  FAQ #文章分类tags: FAQ #文章标签toc: true #是否启用内容索引top: 10032 #文章排序 值越大排序越靠前  在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API Collator类 默认情况下，字符串的比较使用字符串包含字符">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/archives/2021/index.html">
+<meta property="og:url" content="http://example.com/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="title: java中文字典排序comments: false #关闭文章评论categories:  FAQ #文章分类tags: FAQ #文章标签toc: true #是否启用内容索引top: 10032 #文章排序 值越大排序越靠前  在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API Collator类 默认情况下，字符串的比较使用字符串包含字符">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-10T01:45:23.167Z">
+<meta property="article:modified_time" content="2022-10-10T01:53:06.651Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://example.com/archives/2021/index.html">
+  <link rel="canonical" href="http://example.com/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -316,188 +320,111 @@
   
   
 <main class="main" role="main">
-  	<article class="content article article-archives article-type-list" itemscope="">
-	    <header class="article-header">
-	      <h1 itemprop="title">归档: 2021</h1>
-	      <p class="text-muted">共 86 篇文章</p>
-	    </header>
-	    <div class="article-body">
-	      
-  
-  
+  <div class="content">
+  <article id="post-FAQ-中文字典排序" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
-    
+    <div class="article-header">
       
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/" class="article-date">
+	  <time datetime="2022-10-10T01:45:23.167Z" itemprop="datePublished">2022-10-10</time>
+	</a>
+</span>
+        
+        
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 304(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 1(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
       
-      <section class="panel panel-default b-no">
-        <div class="panel-heading" role="tab">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#collapse2021" aria-expanded="true">
-              <i class="icon icon-calendar-plus text-active"></i><i class="icon icon-calendar-minus text"></i>
-              2021
-            </a>
-            <!-- <a href="/archives/2021" class="archive-year">2021</a> -->
-          </h3>
-        </div>
-        <div id="collapse2021" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2021">
-        <div class="panel-body">
-          <div class="collection">
+        <p>title: java中文字典排序<br>comments: false #关闭文章评论<br>categories:</p>
+<ul>
+<li>FAQ #文章分类<br>tags:</li>
+<li>FAQ #文章标签<br>toc: true #是否启用内容索引<br>top: 10032 #文章排序 值越大排序越靠前</li>
+</ul>
+<p>在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API <strong>Collator</strong>类</p>
+<p>默认情况下，字符串的比较使用字符串包含字符的ASCII码来比较。<br>java.text.Collator使用字符串包含字符在指定语言的自然顺序（譬如中文汉字的自然顺序）做比较。是locale敏感的 如果只比较纯英文，那么就不需要使用collator。如果需要对中文进行排序(字典序)就需要使用Collator了 下面是使用示例</p>
+<p><strong>示例</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;北京&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;深圳&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;北京西&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;杭州&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;杭州东&quot;</span>);</span><br><span class="line">        Comparator comparator = Collator.getInstance(Locale.CHINA);</span><br><span class="line">        Collections.sort(list, (e1, e2) -&gt; comparator.compare(e1, e2));</span><br><span class="line">        list.forEach(a -&gt; &#123;</span><br><span class="line">            System.out.println(a);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//最后打印的结果如下</span></span><br><span class="line"><span class="comment">//北京</span></span><br><span class="line"><span class="comment">//北京西</span></span><br><span class="line"><span class="comment">//杭州</span></span><br><span class="line"><span class="comment">//杭州东</span></span><br><span class="line"><span class="comment">//深圳</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
     
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/" title="" target="_blank" rel="external">http://example.com/2022/10/10/FAQ-中文字典排序/</a>
+    </li>
     
-<a href="/2021/12/30/FAQ-tk.mybatis%E9%9B%86%E6%88%90%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/" class="collection-item"   itemprop="url">
-  <time datetime="2021-12-30T06:37:52.813Z" itemprop="datePublished">2021-12-30</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> tk.mybatis集成多数据源
-</a>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
 
 
   
-    
-    
-    
-<a href="/2021/12/30/SpringBoot-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA/" class="collection-item"   itemprop="url">
-  <time datetime="2021-12-30T06:24:09.936Z" itemprop="datePublished">2021-12-30</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> SpringBoot配置文件属性自动提示
-</a>
+</div>
 
-
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
   
+  <ul class="pager pull-left">
     
     
-    
-<a href="/2021/12/30/FAQ-maven%E4%BE%9D%E8%B5%96%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" class="collection-item"   itemprop="url">
-  <time datetime="2021-12-30T03:39:39.989Z" itemprop="datePublished">2021-12-30</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> maven依赖冲突如何解决
-</a>
-
-
-  
+    <li class="next">
+      <a href="/2022/09/13/FAQ-SSH%E7%99%BB%E5%BD%95%E6%8A%A5%E9%94%99/" title="SSH登录报错"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
     
     
-    
-<a href="/2021/12/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%AD%96%E7%95%A5/" class="collection-item"   itemprop="url">
-  <time datetime="2021-12-19T12:00:24.342Z" itemprop="datePublished">2021-12-19</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 策略模式
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/12/19/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B/" class="collection-item"   itemprop="url">
-  <time datetime="2021-12-19T08:02:05.637Z" itemprop="datePublished">2021-12-19</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 单例
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/23/SpringBoot-%E9%9B%86%E6%88%90mybatis/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-23T13:30:21.693Z" itemprop="datePublished">2021-11-23</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> SpringBoot集成mybatis
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/23/FAQ-easyexcel%E4%BD%BF%E7%94%A8%E6%8A%A5%E9%94%99/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-23T10:32:48.552Z" itemprop="datePublished">2021-11-23</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> easyexcel使用报错
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/22/SpringBoot-%E9%9B%86%E6%88%90Durid/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-22T14:42:00.113Z" itemprop="datePublished">2021-11-22</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> SpringBoot集成Druid
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/22/SpringBoot-%E9%9B%86%E6%88%90Jdbc/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-22T13:55:41.957Z" itemprop="datePublished">2021-11-22</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> SpringBoot集成JDBC
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/17/FAQ-RestTemplate%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-17T13:41:35.214Z" itemprop="datePublished">2021-11-17</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> RestTemplate最佳实践
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/14/SpringBoot-%E6%95%B4%E5%90%88%E8%BF%87%E6%BB%A4%E5%99%A8%E3%80%81%E7%9B%91%E5%90%AC%E5%99%A8/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-14T08:55:05.124Z" itemprop="datePublished">2021-11-14</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> SpringBoot 整合过滤器、监听器
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/10/FAQ-Spring%20BeanPostProcessor%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-10T13:53:16.193Z" itemprop="datePublished">2021-11-10</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Spring BeanPostProcessor最佳实践
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/06/FAQ-@ConfigurationProperties%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E5%A4%8D%E6%9D%82%E7%B1%BB%E5%9E%8B/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-06T13:50:51.478Z" itemprop="datePublished">2021-11-06</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> ConfigurationProperties注解配置复杂类型
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/05/FAQ-log4j%E4%B8%8D%E6%89%93%E5%8D%B0%E5%BC%82%E5%B8%B8%E6%A0%88/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-05T07:17:45.378Z" itemprop="datePublished">2021-11-05</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> log4j不打印异常栈
-</a>
-
-
-  
-    
-    
-    
-<a href="/2021/11/04/SpringBoot-SpringBoot%E5%85%A5%E9%97%A8/" class="collection-item"   itemprop="url">
-  <time datetime="2021-11-04T15:47:49.903Z" itemprop="datePublished">2021-11-04</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> SpringBoot 入门
-</a>
-
-
+  </ul>
   
   
-    </div></div></div></section>
+  
+  <div class="bar-right">
+    
+  </div>
+  </div>
+</nav>
   
 
-	    </div>
-  	</article>
-  	 	
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -543,6 +470,39 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
 
 
 
