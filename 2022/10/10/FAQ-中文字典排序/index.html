@@ -17,17 +17,18 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>liliang的个人博客</title>
-  <meta name="description" content="title: java中文字典排序comments: false #关闭文章评论categories:  FAQ #文章分类tags: FAQ #文章标签toc: true #是否启用内容索引top: 10032 #文章排序 值越大排序越靠前  在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API Collator类 默认情况下，字符串的比较使用字符串包含字符">
+  <title>java中文字典排序 | liliang的个人博客</title>
+  <meta name="description" content="在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API Collator类 默认情况下，字符串的比较使用字符串包含字符的ASCII码来比较。java.text.Collator使用字符串包含字符在指定语言的自然顺序（譬如中文汉字的自然顺序）做比较。是locale敏感的 如果只比较纯英文，那么就不需要使用collator。如果需要对中文进行排序(字典序)就需要使用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="java中文字典排序">
 <meta property="og:url" content="http://example.com/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="title: java中文字典排序comments: false #关闭文章评论categories:  FAQ #文章分类tags: FAQ #文章标签toc: true #是否启用内容索引top: 10032 #文章排序 值越大排序越靠前  在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API Collator类 默认情况下，字符串的比较使用字符串包含字符">
+<meta property="og:description" content="在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API Collator类 默认情况下，字符串的比较使用字符串包含字符的ASCII码来比较。java.text.Collator使用字符串包含字符在指定语言的自然顺序（譬如中文汉字的自然顺序）做比较。是locale敏感的 如果只比较纯英文，那么就不需要使用collator。如果需要对中文进行排序(字典序)就需要使用">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-10-10T01:45:23.167Z">
-<meta property="article:modified_time" content="2022-10-10T01:53:06.651Z">
+<meta property="article:modified_time" content="2022-10-10T01:58:51.506Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FAQ">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
   <link rel="canonical" href="http://example.com/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/index.html">
@@ -201,7 +202,7 @@
   <div class="widget">
     <h3 class="widget-title">分类</h3>
     <div class="widget-body">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a><span class="category-list-count">9</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/FAQ/">FAQ</a><span class="category-list-count">32</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Netty/">Netty</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%AB%98%E5%B9%B6%E5%8F%91/">高并发</a><span class="category-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -211,7 +212,7 @@
   <div class="widget">
     <h3 class="widget-title">标签</h3>
     <div class="widget-body">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">31</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/" rel="tag">Netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXL-JOB/" rel="tag">XXL-JOB</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/" rel="tag">Algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FAQ/" rel="tag">FAQ</a><span class="tag-list-count">32</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Netty/" rel="tag">Netty</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXL-JOB/" rel="tag">XXL-JOB</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -237,10 +238,10 @@
             
             <div class="item-inner">
               <p class="item-category">
-                
+                <a class="category-link" href="/categories/FAQ/">FAQ</a>
               </p>
               <p class="item-title">
-                <a href="/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/" class="title">(no title)</a>
+                <a href="/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/" class="title">java中文字典排序</a>
               </p>
               <p class="item-date">
                 <time datetime="2022-10-10T01:45:23.167Z" itemprop="datePublished">2022-10-10</time>
@@ -319,11 +320,28 @@
 
   
   
+  <aside class="sidebar sidebar-toc collapse   in  " id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      
+    </nav>
+  </div>
+</aside>
+
 <main class="main" role="main">
   <div class="content">
   <article id="post-FAQ-中文字典排序" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      java中文字典排序
+    </h1>
+  
+
       
       <div class="article-meta">
         <span class="article-date">
@@ -333,7 +351,17 @@
 	</a>
 </span>
         
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/FAQ/">FAQ</a>
+  </span>
+
         
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/FAQ/" rel="tag">FAQ</a>
+  </span>
+
 
         
 	<span class="article-read hidden-xs">
@@ -347,7 +375,7 @@
         <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 304(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 253(字)</span>
 	
 	
 		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 1(分)</span>
@@ -357,12 +385,7 @@
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>title: java中文字典排序<br>comments: false #关闭文章评论<br>categories:</p>
-<ul>
-<li>FAQ #文章分类<br>tags:</li>
-<li>FAQ #文章标签<br>toc: true #是否启用内容索引<br>top: 10032 #文章排序 值越大排序越靠前</li>
-</ul>
-<p>在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API <strong>Collator</strong>类</p>
+        <p>在日常开发中经常会遇到一些需要对中文进行排序(按字典排序) java其实提供了相关的API <strong>Collator</strong>类</p>
 <p>默认情况下，字符串的比较使用字符串包含字符的ASCII码来比较。<br>java.text.Collator使用字符串包含字符在指定语言的自然顺序（譬如中文汉字的自然顺序）做比较。是locale敏感的 如果只比较纯英文，那么就不需要使用collator。如果需要对中文进行排序(字典序)就需要使用Collator了 下面是使用示例</p>
 <p><strong>示例</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;北京&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;深圳&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;北京西&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;杭州&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;杭州东&quot;</span>);</span><br><span class="line">        Comparator comparator = Collator.getInstance(Locale.CHINA);</span><br><span class="line">        Collections.sort(list, (e1, e2) -&gt; comparator.compare(e1, e2));</span><br><span class="line">        list.forEach(a -&gt; &#123;</span><br><span class="line">            System.out.println(a);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//最后打印的结果如下</span></span><br><span class="line"><span class="comment">//北京</span></span><br><span class="line"><span class="comment">//北京西</span></span><br><span class="line"><span class="comment">//杭州</span></span><br><span class="line"><span class="comment">//杭州东</span></span><br><span class="line"><span class="comment">//深圳</span></span><br></pre></td></tr></table></figure>
@@ -378,7 +401,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/" title="" target="_blank" rel="external">http://example.com/2022/10/10/FAQ-中文字典排序/</a>
+      <a href="http://example.com/2022/10/10/FAQ-%E4%B8%AD%E6%96%87%E5%AD%97%E5%85%B8%E6%8E%92%E5%BA%8F/" title="java中文字典排序" target="_blank" rel="external">http://example.com/2022/10/10/FAQ-中文字典排序/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -392,12 +415,6 @@
   </article>
   
     
-  <section id="comments">
-  	
-      <div id="vcomments"></div>
-    
-  </section>
-
 
   
 </div>
@@ -412,6 +429,14 @@
       <a href="/2022/09/13/FAQ-SSH%E7%99%BB%E5%BD%95%E6%8A%A5%E9%94%99/" title="SSH登录报错"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn " data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">    <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
     
   </ul>
   
@@ -476,33 +501,6 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
-
-
-   
-    
-  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/valine"></script>
-  <script type="text/javascript">
-  var GUEST = ['nick', 'mail', 'link'];
-  var meta = 'nick,mail,link';
-  meta = meta.split(',').filter(function(item) {
-    return GUEST.indexOf(item) > -1;
-  });
-  new Valine({
-    el: '#vcomments',
-    verify: false,
-    notify: false,
-    appId: '',
-    appKey: '',
-    placeholder: 'Just go go',
-    avatar: 'mm',
-    meta: meta,
-    pageSize: '10' || 10,
-    visitor: false
-  });
-  </script>
-
-     
 
 
 
